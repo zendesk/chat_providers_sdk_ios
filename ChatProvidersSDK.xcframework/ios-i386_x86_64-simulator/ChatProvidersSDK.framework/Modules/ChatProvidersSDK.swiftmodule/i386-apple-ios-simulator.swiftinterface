@@ -1,0 +1,778 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.1.3 (swiftlang-1100.0.282.1 clang-1100.0.33.15)
+// swift-module-flags: -target i386-apple-ios10.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name ChatProvidersSDK
+@_exported import ChatProvidersSDK
+import CommonCrypto
+import Foundation
+import Swift
+import SystemConfiguration
+import UIKit
+import os
+@frozen @objc(ZDKConnectionState) public enum ConnectionState : Swift.Int, Swift.CustomStringConvertible {
+  case connecting
+  case connected
+  case disconnected
+  case reconnecting
+  case failed
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc(ZDKDepartment) final public class Department : ObjectiveC.NSObject {
+  @ChatProvidersSDK.DecodeAsString @objc final public var id: Swift.String {
+    @objc get
+  }
+  @objc final public let name: Swift.String
+  final public let status: ChatProvidersSDK.DepartmentStatus
+  @available(swift, obsoleted: 1.0)
+  @objc final public var departmentStatus: ChatProvidersSDK.ZDKDepartmentStatus {
+    @objc get
+  }
+  public init(id: Swift.String, name: Swift.String, status: ChatProvidersSDK.DepartmentStatus)
+  @available(swift, obsoleted: 1.0)
+  @objc convenience public init(id: Swift.String, name: Swift.String, departmentStatus: ChatProvidersSDK.ZDKDepartmentStatus)
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+extension Department {
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
+}
+extension Date {
+  public var iso8601: Swift.String {
+    get
+  }
+}
+@objc public enum ChatError : Swift.Int, Foundation.LocalizedError, Foundation.CustomNSError {
+  case chatIsNotInitialized
+  case disconnected
+  public var localizedDescription: Swift.String {
+    get
+  }
+  public var recoverySuggestion: Swift.String? {
+    get
+  }
+  public static var errorDomain: Swift.String {
+    get
+  }
+  public var errorCode: Swift.Int {
+    get
+  }
+  public var errorUserInfo: [Swift.String : Any] {
+    get
+  }
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+  public static var _nsErrorDomain: Swift.String {
+    get
+  }
+}
+@objc(ZDKConnectionProvider) final public class ConnectionProvider : ObjectiveC.NSObject {
+  @objc final public var state: ChatProvidersSDK.ConnectionState {
+    @objc get
+  }
+  @objc final public func connect()
+  @objc final public func disconnect()
+  @objc final public func observeConnectionState(_ completion: @escaping (ChatProvidersSDK.ConnectionState) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(ZDKChatAttachment) final public class ChatAttachment : ObjectiveC.NSObject {
+  @objc final public let type: Swift.String
+  @objc final public let name: Swift.String
+  @objc final public let mimeType: Swift.String
+  @objc final public let size: Swift.Int
+  @objc final public let url: Swift.String
+  @objc final public let localURL: Foundation.URL?
+  final public var attachmentError: ChatProvidersSDK.ChatAttachmentError? {
+    get
+    }
+  @objc convenience public init(name: Swift.String, mimeType: Swift.String, size: Swift.Int, url: Swift.String, localURL: Foundation.URL?, type: Swift.String)
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+@objc(ZDKProfileProvider) final public class ProfileProvider : ObjectiveC.NSObject {
+  final public func setVisitorInfo(_ visitorInfo: ChatProvidersSDK.VisitorInfo, completion: ((Swift.Result<ChatProvidersSDK.VisitorInfo, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func trackVisitorPath(_ visitorPath: ChatProvidersSDK.VisitorPath, completion: ((Swift.Result<ChatProvidersSDK.VisitorPath, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func addTags(_ tags: [Swift.String], completion: ((Swift.Result<[Swift.String], ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func removeTags(_ tags: [Swift.String], completion: ((Swift.Result<[Swift.String], ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func appendNote(_ note: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func setNote(_ note: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension ProfileProvider {
+  @available(swift, obsoleted: 1.0)
+  @objc final public func setVisitorInfo(_ visitorInfo: ChatProvidersSDK.VisitorInfo, completion: ((ChatProvidersSDK.VisitorInfo?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func trackVisitorPath(_ visitorPath: ChatProvidersSDK.VisitorPath, completion: ((ChatProvidersSDK.VisitorPath?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func addTags(_ tags: [Swift.String], completion: (([Swift.String]?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func removeTags(_ tags: [Swift.String], completion: (([Swift.String]?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func appendNote(_ note: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func setNote(_ note: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
+}
+public enum DepartmentStatus : Swift.String, Swift.Codable {
+  case offline
+  case online
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc(ZDKDepartmentStatus) public enum ZDKDepartmentStatus : Swift.Int {
+  case offline
+  case online
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension DepartmentStatus : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+@objc(ZDKChatAPIConfiguration) final public class ChatAPIConfiguration : ObjectiveC.NSObject {
+  @objc final public var visitorPathOne: Swift.String?
+  @objc final public var visitorPathTwo: Swift.String
+  @objc final public var visitorPathTwoValue: Swift.String?
+  @objc final public var tags: [Swift.String]
+  @objc final public var department: Swift.String?
+  @objc final public var visitorInfo: ChatProvidersSDK.VisitorInfo?
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension ChatAPIConfiguration {
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+}
+public enum LogLevel : Swift.Int {
+  case verbose
+  case debug
+  case info
+  case warn
+  case error
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol Log {
+  func logit(file: Swift.StaticString, line: Swift.Int, function: Swift.StaticString, level: ChatProvidersSDK.LogLevel, error: Swift.Error?, msg: Swift.String, args: [Swift.CVarArg])
+}
+extension Log {
+  public func i(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+  public func v(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+  public func d(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+  public func w(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+  public func e(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+}
+public protocol LoggerFactory {
+  func getLoggerFor(namespace: Swift.String, andClass clazz: Any) -> ChatProvidersSDK.Log
+  func setDefault(level: ChatProvidersSDK.LogLevel)
+}
+final public class Logger {
+  public static var defaultLevel: ChatProvidersSDK.LogLevel
+  public init()
+  public static func setFactory(factory: ChatProvidersSDK.LoggerFactory)
+  public static func getLogger(namespace: Swift.String, for clazz: Any) -> ChatProvidersSDK.Log
+  @objc deinit
+}
+public protocol Loggable : AnyObject {
+  static var log: ChatProvidersSDK.Log { get }
+  var log: ChatProvidersSDK.Log { get }
+}
+extension Loggable {
+  public static var log: ChatProvidersSDK.Log {
+    get
+  }
+  public var log: ChatProvidersSDK.Log {
+    get
+  }
+}
+public struct DebugLogger {
+  public static var logFileName: Swift.Bool
+  public static var logSource: Swift.Bool
+  public static var logThreadName: Swift.Bool
+}
+extension DebugLogger : ChatProvidersSDK.Log {
+  public init(namespace: Swift.String, for clazz: Any, withLevel level: ChatProvidersSDK.LogLevel)
+  public func logit(file: Swift.StaticString, line: Swift.Int, function: Swift.StaticString, level: ChatProvidersSDK.LogLevel, error: Swift.Error?, msg: Swift.String, args: [Swift.CVarArg])
+}
+@objc(ZDKChatAccount) final public class Account : ObjectiveC.NSObject {
+  public static let initial: ChatProvidersSDK.Account
+  @objc(ZDKChatAccountStatus) public enum Status : Swift.Int {
+    case online
+    case offline
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc final public let status: ChatProvidersSDK.Account.Status
+  @objc final public let departments: [ChatProvidersSDK.Department]?
+  @objc public init(status: ChatProvidersSDK.Account.Status, departments: [ChatProvidersSDK.Department]?)
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc final public func containsDepartment(with name: Swift.String) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(ZDKPushNotificationsProvider) final public class PushNotificationsProvider : ObjectiveC.NSObject, ChatProvidersSDK.Loggable {
+  @objc public static let ChatMessageReceivedNotification: Foundation.NSNotification.Name
+  @objc public static let ChatEndedNotification: Foundation.NSNotification.Name
+  @objc deinit
+  @objc override dynamic public init()
+}
+extension PushNotificationsProvider {
+  @objc final public func didReceiveRemoteNotification(_ userInfo: [Swift.AnyHashable : Any], in application: UIKit.UIApplication)
+  @objc final public func isChatPushNotification(_ userInfo: [Swift.AnyHashable : Any]) -> Swift.Bool
+}
+extension PushNotificationsProvider {
+  @objc final public func registerPushToken(_ pushToken: Foundation.Data)
+}
+extension PushNotificationsProvider {
+  @objc final public func unregisterPushToken()
+}
+@objc(ZDKSettingsProvider) final public class SettingsProvider : ObjectiveC.NSObject {
+  @objc final public func observeChatSettings(_ completion: @escaping (ChatProvidersSDK.ChatSettings) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(ZDKChatState) final public class ChatState : ObjectiveC.NSObject {
+  @objc public static let initial: ChatProvidersSDK.ChatState
+  @objc final public let comment: Swift.String
+  final public let rating: ChatProvidersSDK.Rating
+  @available(swift, obsoleted: 1.0)
+  @objc final public var zdkRating: ChatProvidersSDK.ZDKRating {
+    @objc get
+  }
+  @objc final public let agents: [ChatProvidersSDK.Agent]
+  @objc final public let isChatting: Swift.Bool
+  @objc final public let department: ChatProvidersSDK.Department?
+  @objc final public let logs: [ChatProvidersSDK.ChatLog]
+  @objc final public var queuePosition: ChatProvidersSDK.QueuePosition
+  @objc final public var chatPhase: ChatProvidersSDK.ChatPhase {
+    get
+    }
+  public init(agents: [ChatProvidersSDK.Agent], isChatting: Swift.Bool, department: ChatProvidersSDK.Department?, logs: [ChatProvidersSDK.ChatLog], queue: Swift.Int, comment: Swift.String, rating: ChatProvidersSDK.Rating)
+  @objc final public func log(withId id: Swift.String) -> ChatProvidersSDK.ChatLog?
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension ChatState {
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+}
+@objc(ZDKQueuePosition) final public class QueuePosition : ObjectiveC.NSObject {
+  @objc final public let id: Swift.String
+  @objc final public var queue: Swift.Int
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension ChatState {
+  @available(swift, obsoleted: 1.0)
+  @objc convenience dynamic public init(agents: [ChatProvidersSDK.Agent], isChatting: Swift.Bool, department: ChatProvidersSDK.Department?, logs: [ChatProvidersSDK.ChatLog], queue: Swift.Int, comment: Swift.String, rating: ChatProvidersSDK.ZDKRating)
+}
+public enum ChatAttachmentError : Swift.String, Foundation.LocalizedError, Foundation.CustomNSError, Swift.Hashable {
+  case unsupportedType
+  case sizeLimit
+  public var localizedDescription: Swift.String? {
+    get
+  }
+  public static var errorDomain: Swift.String {
+    get
+  }
+  public var errorCode: Swift.Int {
+    get
+  }
+  public var errorUserInfo: [Swift.String : Any] {
+    get
+  }
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc(ZDKChatSettings) final public class ChatSettings : ObjectiveC.NSObject {
+  @objc public static let initial: ChatProvidersSDK.ChatSettings
+  @objc final public let fileSizeLimit: Swift.Int64
+  @objc final public let isFileSendingEnabled: Swift.Bool
+  @objc final public let supportedFileTypes: [Swift.String]
+  @objc public init(fileSizeLimit: Swift.Int64, isFileSendingEnabled: Swift.Bool, supportedFileTypes: [Swift.String])
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+@objc(ZDKChatProviders) final public class Providers : ObjectiveC.NSObject {
+  @objc final public let connectionProvider: ChatProvidersSDK.ConnectionProvider
+  @objc final public let profileProvider: ChatProvidersSDK.ProfileProvider
+  @objc final public let pushNotificationsProvider: ChatProvidersSDK.PushNotificationsProvider
+  @objc final public let chatProvider: ChatProvidersSDK.ChatProvider
+  @objc final public let settingsProvider: ChatProvidersSDK.SettingsProvider
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(ZDKChatLogType) public enum ChatLogType : Swift.Int {
+  case message
+  case attachmentMessage
+  case memberJoin
+  case memberLeave
+  case chatComment
+  case chatRating
+  case chatRatingRequest
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol ChatLogProtocol : Swift.CustomStringConvertible, Swift.Hashable {
+  var id: Swift.String { get }
+  var nick: Swift.String { get }
+  var displayName: Swift.String { get }
+  var timestamp: Foundation.TimeInterval { get }
+  var type: ChatProvidersSDK.ChatLogType { get }
+  var participant: ChatProvidersSDK.ChatParticipant { get }
+  var status: ChatProvidersSDK.DeliveryStatus { get }
+}
+@objc(ZDKChatLog) public class ChatLog : ObjectiveC.NSObject, ChatProvidersSDK.ChatLogProtocol {
+  @objc final public let id: Swift.String
+  @objc final public let nick: Swift.String
+  @objc final public let displayName: Swift.String
+  @objc final public let timestamp: Foundation.TimeInterval
+  @objc final public let type: ChatProvidersSDK.ChatLogType
+  public var status: ChatProvidersSDK.DeliveryStatus {
+    get
+    }
+  @objc public var participant: ChatProvidersSDK.ChatParticipant {
+    @objc get
+  }
+  @objc public var isVisitor: Swift.Bool {
+    @objc get
+  }
+  @objc override dynamic public var description: Swift.String {
+    @objc get
+  }
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension ChatLog {
+  @available(swift, obsoleted: 1.0)
+  @objc dynamic public var deliveryStatus: ChatProvidersSDK.ZDKDeliveryStatus {
+    @objc get
+  }
+}
+@objc(ZDKVisitorPath) final public class VisitorPath : ObjectiveC.NSObject {
+  @objc final public let event: Swift.String
+  @objc final public let url: Swift.String
+  @objc public init(event: Swift.String, url: Swift.String = Date().iso8601)
+  @objc override dynamic public init()
+  @objc deinit
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+@frozen @objc(ZDKChatParticipant) public enum ChatParticipant : Swift.Int, Swift.Hashable, Swift.CaseIterable, Swift.CustomStringConvertible {
+  case agent
+  case visitor
+  case trigger
+  case system
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+  public typealias AllCases = [ChatProvidersSDK.ChatParticipant]
+  public static var allCases: [ChatProvidersSDK.ChatParticipant] {
+    get
+  }
+}
+@objc public enum ChatPhase : Swift.Int {
+  case initialising
+  case configuring
+  case active
+  case ended
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc(ZDKChatAttachmentMessage) final public class ChatAttachmentMessage : ChatProvidersSDK.ChatLog {
+  @objc final public let message: Swift.String
+  @objc final public let attachment: ChatProvidersSDK.ChatAttachment
+  @objc final public var url: Foundation.URL? {
+    @objc get
+  }
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+@objc(ZDKChatMemberLeave) final public class ChatMemberLeave : ChatProvidersSDK.ChatLog {
+  public static func == (lhs: ChatProvidersSDK.ChatMemberLeave, rhs: ChatProvidersSDK.ChatMemberLeave) -> Swift.Bool
+  @objc final public let channel: Swift.String
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+extension ChatMemberLeave {
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
+}
+@objc(ZDKVisitorInfo) final public class VisitorInfo : ObjectiveC.NSObject {
+  @objc public static let initial: ChatProvidersSDK.VisitorInfo
+  @objc final public let name: Swift.String
+  @objc final public let email: Swift.String
+  @objc final public let phoneNumber: Swift.String
+  @objc public init(name: Swift.String = "", email: Swift.String = "", phoneNumber: Swift.String = "")
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+@objc(ZDKChat) final public class Chat : ObjectiveC.NSObject, ChatProvidersSDK.Loggable {
+  @objc public static let NotificationMessageReceived: Foundation.NSNotification.Name
+  @objc public static let NotificationChatEnded: Foundation.NSNotification.Name
+  @objc final public let accountKey: Swift.String
+  @objc final public var providers: ChatProvidersSDK.Providers {
+    get
+    }
+  @objc public static var instance: ChatProvidersSDK.Chat? {
+    @objc get
+  }
+  @objc final public var configuration: ChatProvidersSDK.ChatAPIConfiguration {
+    @objc get
+    @objc set
+  }
+  @objc public static var connectionProvider: ChatProvidersSDK.ConnectionProvider? {
+    @objc get
+  }
+  @objc public static var profileProvider: ChatProvidersSDK.ProfileProvider? {
+    @objc get
+  }
+  @objc public static var pushNotificationsProvider: ChatProvidersSDK.PushNotificationsProvider? {
+    @objc get
+  }
+  @objc public static var chatProvider: ChatProvidersSDK.ChatProvider? {
+    @objc get
+  }
+  @objc public static var settingsProvider: ChatProvidersSDK.SettingsProvider? {
+    @objc get
+  }
+  @objc final public var connectionProvider: ChatProvidersSDK.ConnectionProvider {
+    @objc get
+  }
+  @objc final public var pushNotificationsProvider: ChatProvidersSDK.PushNotificationsProvider {
+    @objc get
+  }
+  @objc final public var profileProvider: ChatProvidersSDK.ProfileProvider {
+    @objc get
+  }
+  @objc final public var chatProvider: ChatProvidersSDK.ChatProvider {
+    @objc get
+  }
+  @objc final public var settingsProvider: ChatProvidersSDK.SettingsProvider {
+    @objc get
+  }
+  @objc final public class func initialize(accountKey: Swift.String, queue: Dispatch.DispatchQueue = .main)
+  @objc final public func clearCache()
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension Chat {
+  @objc final public class func registerPushToken(_ pushTokenData: Foundation.Data)
+  @objc final public class func didReceiveRemoteNotification(_ userInfo: [Swift.AnyHashable : Any], in application: UIKit.UIApplication)
+}
+@objc(ZDKOfflineForm) final public class OfflineForm : ObjectiveC.NSObject {
+  @objc final public let visitorInfo: ChatProvidersSDK.VisitorInfo?
+  @objc final public let departmentId: Swift.String?
+  @objc final public let message: Swift.String
+  @objc public init(visitorInfo: ChatProvidersSDK.VisitorInfo?, departmentId: Swift.String?, message: Swift.String)
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension OfflineForm {
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+}
+@objc(ZDKChatProvider) final public class ChatProvider : ObjectiveC.NSObject, ChatProvidersSDK.Loggable {
+  @objc final public func requestChat()
+  @objc final public func setTyping(isTyping: Swift.Bool)
+  final public func sendOfflineForm(_ offlineForm: ChatProvidersSDK.OfflineForm, completion: ((Swift.Result<ChatProvidersSDK.OfflineForm, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func sendMessage(_ message: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func resendFailedMessage(withId id: Swift.String, completion: ((Swift.Result<Swift.String, Swift.Error>) -> Swift.Void)? = nil)
+  final public func deleteFailedMessage(withId id: Swift.String, completion: ((Swift.Result<Swift.String, Swift.Error>) -> Swift.Void)? = nil)
+  final public func sendFile(url: Foundation.URL, onProgress: ((Swift.Double) -> Swift.Void)? = nil, completion: ((Swift.Result<ChatProvidersSDK.ChatAttachmentMessage, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func resendFailedFile(withId id: Swift.String, onProgress: ((Swift.Double) -> Swift.Void)? = nil, completion: ((Swift.Result<Swift.String, Swift.Error>) -> Swift.Void)? = nil)
+  final public func sendChatRating(_ rating: ChatProvidersSDK.Rating, completion: ((Swift.Result<ChatProvidersSDK.Rating, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func sendChatComment(_ comment: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func endChat(_ completion: ((Swift.Result<Swift.Bool, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  final public func getAccount(_ completion: @escaping (Swift.Result<ChatProvidersSDK.Account, Swift.Error>) -> Swift.Void)
+  @objc final public func observeChatState(_ completion: @escaping (ChatProvidersSDK.ChatState) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @objc final public func observeAccount(_ completion: @escaping (ChatProvidersSDK.Account) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(ZDKChatProvider) extension ChatProvider {
+  @available(swift, obsoleted: 1.0)
+  @objc final public func sendMessage(_ message: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func sendOfflineForm(_ offlineForm: ChatProvidersSDK.OfflineForm, completion: ((ChatProvidersSDK.OfflineForm?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func resendFailedMessage(withId id: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func deleteFailedMessage(withId id: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func sendFile(url: Foundation.URL, onProgress: ((Swift.Double) -> Swift.Void)? = nil, completion: ((Swift.String?, ChatProvidersSDK.ChatAttachmentMessage?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func resendFailedFile(withId id: Swift.String, onProgress: ((Swift.Double) -> Swift.Void)? = nil, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)? = nil)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func sendChatRating(_ rating: ChatProvidersSDK.ZDKRating, completion: ((ChatProvidersSDK.ZDKRating, Swift.Error?) -> Swift.Void)? = nil)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func sendChatComment(_ comment: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)? = nil)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func getAccount(_ completion: @escaping ((ChatProvidersSDK.Account?, Swift.Error?) -> Swift.Void))
+  @available(swift, obsoleted: 1.0)
+  @objc final public func endChat(_ completion: ((Swift.Bool, Swift.Error?) -> Swift.Void)?)
+}
+@objc(ZDKAgent) final public class Agent : ObjectiveC.NSObject {
+  @objc final public let id: Swift.String
+  @objc final public let name: Swift.String
+  @objc final public let avatar: Foundation.URL?
+  @objc final public var isTyping: Swift.Bool {
+    get
+    }
+  @objc public init(avatar: Foundation.URL?, id: Swift.String, name: Swift.String, isTyping: Swift.Bool)
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public enum MediatorEndpoint : Swift.Int, Swift.Hashable {
+  case production
+  case staging
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc(ZDKChatMessage) final public class ChatMessage : ChatProvidersSDK.ChatLog {
+  public static func == (lhs: ChatProvidersSDK.ChatMessage, rhs: ChatProvidersSDK.ChatMessage) -> Swift.Bool
+  @objc final public let message: Swift.String
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+extension ChatMessage {
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
+}
+public enum DeliveryStatus : Swift.Hashable {
+  case pending
+  case delivered
+  case failed(reason: ChatProvidersSDK.DeliveryStatusError)
+  public var isFailed: Swift.Bool {
+    get
+  }
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: ChatProvidersSDK.DeliveryStatus, b: ChatProvidersSDK.DeliveryStatus) -> Swift.Bool
+}
+public enum DeliveryStatusError : Swift.Error, Swift.Hashable {
+  case fileSendingIsDisabled(messageId: Swift.String?)
+  case fileSizeTooLarge(messageId: Swift.String)
+  case unsupportedFileType(messageId: Swift.String)
+  case networkError(messageId: Swift.String)
+  case timeout(messageId: Swift.String)
+  case failed(messageId: Swift.String?)
+  public var messageId: Swift.String? {
+    get
+  }
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: ChatProvidersSDK.DeliveryStatusError, b: ChatProvidersSDK.DeliveryStatusError) -> Swift.Bool
+}
+@objc public enum ZDKDeliveryStatus : Swift.Int, Swift.Hashable {
+  case pending
+  case delivered
+  case failed
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum MimeUtils {
+  public static func hasMimeType(_ mimeType: Swift.String) -> Swift.Bool
+  public static func mimeType(from fileExtension: Swift.String) -> Swift.String?
+  public static func hasExtension(_ fileExtension: Swift.String) -> Swift.Bool
+  public static func fileExtension(from mimeType: Swift.String) -> Swift.String?
+}
+public protocol Observable : AnyObject {
+  associatedtype Observable
+  var onUpdate: ([Foundation.UUID : (Self.Observable) -> Swift.Void]) { get set }
+  func addObserver<T>(_ observer: T, observable: Self.Observable?, onRemove: ((Foundation.UUID) -> Swift.Void)?, _ closure: @escaping (T?, Foundation.UUID, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
+  func notifyObservers(_ observable: Self.Observable)
+}
+extension Observable {
+  public func addObserver<T>(_ observer: T, observable: Self.Observable? = nil, onRemove: ((Foundation.UUID) -> Swift.Void)? = nil, _ closure: @escaping (T?, Foundation.UUID, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
+  public func notifyObservers(_ observable: Self.Observable)
+}
+@objc(ZDKObservationToken) final public class ObservationToken : ObjectiveC.NSObject {
+  public init(id: Foundation.UUID, cancellationClosure: @escaping () -> Swift.Void)
+  @objc final public func cancel()
+  @objc override dynamic public init()
+  @objc deinit
+}
+@propertyWrapper public struct DecodeAsString {
+  public var wrappedValue: Swift.String
+  public init(wrappedValue: Swift.String)
+}
+extension DecodeAsString : Swift.Codable {
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+final public class ObserveBehaviour {
+  @objc deinit
+  public init()
+  final public func observe(_ block: () -> ChatProvidersSDK.ObservationToken?)
+  final public func unobserve()
+}
+final public class ObserveBehaviours {
+  @objc deinit
+  public init(_ behaviours: ChatProvidersSDK.ObserveBehaviour...)
+  final public func unobserve()
+}
+extension ObservationToken {
+  final public func asBehaviour() -> ChatProvidersSDK.ObserveBehaviour
+}
+extension VisitorPath {
+  public static func == (lhs: ChatProvidersSDK.VisitorPath, rhs: ChatProvidersSDK.VisitorPath) -> Swift.Bool
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+}
+@objc(ZDKChatMemberJoin) final public class ChatMemberJoin : ChatProvidersSDK.ChatLog {
+  @objc final public let channel: Swift.String
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+extension ChatMemberJoin {
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
+}
+public enum Rating : Swift.String, Swift.Codable {
+  case none
+  case good
+  case bad
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc(ZDKRating) public enum ZDKRating : Swift.Int {
+  case none
+  case good
+  case bad
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension ChatProvidersSDK.ConnectionState : Swift.Equatable {}
+extension ChatProvidersSDK.ConnectionState : Swift.Hashable {}
+extension ChatProvidersSDK.ConnectionState : Swift.RawRepresentable {}
+extension ChatProvidersSDK.Department : Swift.Encodable {}
+extension ChatProvidersSDK.Department : Swift.Decodable {}
+extension ChatProvidersSDK.ChatError : Swift.Equatable {}
+extension ChatProvidersSDK.ChatError : Swift.Hashable {}
+extension ChatProvidersSDK.ChatError : Swift.RawRepresentable {}
+extension ChatProvidersSDK.ChatAttachment : Swift.Encodable {}
+extension ChatProvidersSDK.ChatAttachment : Swift.Decodable {}
+extension ChatProvidersSDK.DepartmentStatus : Swift.Hashable {}
+extension ChatProvidersSDK.DepartmentStatus : Swift.RawRepresentable {}
+extension ChatProvidersSDK.ZDKDepartmentStatus : Swift.Equatable {}
+extension ChatProvidersSDK.ZDKDepartmentStatus : Swift.Hashable {}
+extension ChatProvidersSDK.ZDKDepartmentStatus : Swift.RawRepresentable {}
+extension ChatProvidersSDK.LogLevel : Swift.Equatable {}
+extension ChatProvidersSDK.LogLevel : Swift.Hashable {}
+extension ChatProvidersSDK.LogLevel : Swift.RawRepresentable {}
+extension ChatProvidersSDK.Account.Status : Swift.Equatable {}
+extension ChatProvidersSDK.Account.Status : Swift.Hashable {}
+extension ChatProvidersSDK.Account.Status : Swift.RawRepresentable {}
+extension ChatProvidersSDK.ChatAttachmentError : Swift.Encodable {}
+extension ChatProvidersSDK.ChatAttachmentError : Swift.Decodable {}
+extension ChatProvidersSDK.ChatAttachmentError : Swift.RawRepresentable {}
+extension ChatProvidersSDK.ChatSettings : Swift.Encodable {}
+extension ChatProvidersSDK.ChatSettings : Swift.Decodable {}
+extension ChatProvidersSDK.ChatLogType : Swift.Equatable {}
+extension ChatProvidersSDK.ChatLogType : Swift.Hashable {}
+extension ChatProvidersSDK.ChatLogType : Swift.RawRepresentable {}
+extension ChatProvidersSDK.VisitorPath : Swift.Encodable {}
+extension ChatProvidersSDK.VisitorPath : Swift.Decodable {}
+extension ChatProvidersSDK.ChatParticipant : Swift.RawRepresentable {}
+extension ChatProvidersSDK.ChatPhase : Swift.Hashable {}
+extension ChatProvidersSDK.ChatPhase : Swift.RawRepresentable {}
+extension ChatProvidersSDK.VisitorInfo : Swift.Encodable {}
+extension ChatProvidersSDK.VisitorInfo : Swift.Decodable {}
+extension ChatProvidersSDK.Agent : Swift.Encodable {}
+extension ChatProvidersSDK.Agent : Swift.Decodable {}
+extension ChatProvidersSDK.MediatorEndpoint : Swift.RawRepresentable {}
+extension ChatProvidersSDK.ZDKDeliveryStatus : Swift.RawRepresentable {}
+extension ChatProvidersSDK.Rating : Swift.Hashable {}
+extension ChatProvidersSDK.Rating : Swift.RawRepresentable {}
+extension ChatProvidersSDK.ZDKRating : Swift.Equatable {}
+extension ChatProvidersSDK.ZDKRating : Swift.Hashable {}
+extension ChatProvidersSDK.ZDKRating : Swift.RawRepresentable {}
