@@ -116,6 +116,7 @@ extension Date {
   final public func removeTags(_ tags: [Swift.String], completion: ((Swift.Result<[Swift.String], ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
   final public func appendNote(_ note: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
   final public func setNote(_ note: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
+  @objc final public func observeVisitorInfo(_ completion: @escaping (ChatProvidersSDK.VisitorInfo) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
   @objc override dynamic public init()
   @objc deinit
 }
@@ -247,7 +248,6 @@ extension DebugLogger : ChatProvidersSDK.Log {
 }
 @objc(ZDKPushNotificationsProvider) final public class PushNotificationsProvider : ObjectiveC.NSObject, ChatProvidersSDK.Loggable {
   @objc public static let ChatMessageReceivedNotification: Foundation.NSNotification.Name
-  @objc public static let ChatEndedNotification: Foundation.NSNotification.Name
   @objc deinit
   @objc override dynamic public init()
 }
@@ -271,7 +271,7 @@ extension PushNotificationsProvider {
   @objc final public let comment: Swift.String
   final public let rating: ChatProvidersSDK.Rating
   @available(swift, obsoleted: 1.0)
-  @objc final public var zdkRating: ChatProvidersSDK.ZDKRating {
+  @objc final public var ratingValue: ChatProvidersSDK.ZDKRating {
     @objc get
   }
   @objc final public let agents: [ChatProvidersSDK.Agent]
@@ -394,6 +394,20 @@ extension ChatLog {
     @objc get
   }
 }
+@objc(ZDKChatComment) final public class ChatComment : ChatProvidersSDK.ChatLog {
+  public static func == (lhs: ChatProvidersSDK.ChatComment, rhs: ChatProvidersSDK.ChatComment) -> Swift.Bool
+  @objc final public let comment: Swift.String
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+extension ChatComment {
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
+}
 @objc(ZDKVisitorPath) final public class VisitorPath : ObjectiveC.NSObject {
   @objc final public let event: Swift.String
   @objc final public let url: Swift.String
@@ -425,6 +439,7 @@ extension ChatLog {
   case initialising
   case configuring
   case active
+  case ending
   case ended
   public typealias RawValue = Swift.Int
   public init?(rawValue: Swift.Int)
@@ -448,6 +463,24 @@ extension ChatLog {
   @objc deinit
 }
 extension ChatMemberLeave {
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
+}
+@objc(ZDKChatRating) final public class ChatRating : ChatProvidersSDK.ChatLog {
+  public static func == (lhs: ChatProvidersSDK.ChatRating, rhs: ChatProvidersSDK.ChatRating) -> Swift.Bool
+  final public let rating: ChatProvidersSDK.Rating
+  @available(swift, obsoleted: 1.0)
+  @objc final public var ratingValue: ChatProvidersSDK.ZDKRating {
+    @objc get
+  }
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+extension ChatRating {
   @objc override final public var description: Swift.String {
     @objc get
   }
@@ -647,6 +680,19 @@ public enum DeliveryStatusError : Swift.Error, Swift.Hashable {
     get
   }
 }
+@objc(ZDKRatingRequest) final public class ChatRatingRequest : ChatProvidersSDK.ChatLog {
+  public static func == (lhs: ChatProvidersSDK.ChatRatingRequest, rhs: ChatProvidersSDK.ChatRatingRequest) -> Swift.Bool
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+extension ChatRatingRequest {
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
+}
 public enum MimeUtils {
   public static func hasMimeType(_ mimeType: Swift.String) -> Swift.Bool
   public static func mimeType(from fileExtension: Swift.String) -> Swift.String?
@@ -656,11 +702,11 @@ public enum MimeUtils {
 public protocol Observable : AnyObject {
   associatedtype Observable
   var onUpdate: ([Foundation.UUID : (Self.Observable) -> Swift.Void]) { get set }
-  func addObserver<T>(_ observer: T, observable: Self.Observable?, onRemove: ((Foundation.UUID) -> Swift.Void)?, _ closure: @escaping (T?, Foundation.UUID, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
+  func addObserver<T>(_ observer: T, eagerObserver: Self.Observable?, onRemove: ((Foundation.UUID) -> Swift.Void)?, _ closure: @escaping (T?, Foundation.UUID, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
   func notifyObservers(_ observable: Self.Observable)
 }
 extension Observable {
-  public func addObserver<T>(_ observer: T, observable: Self.Observable? = nil, onRemove: ((Foundation.UUID) -> Swift.Void)? = nil, _ closure: @escaping (T?, Foundation.UUID, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
+  public func addObserver<T>(_ observer: T, eagerObserver: Self.Observable? = nil, onRemove: ((Foundation.UUID) -> Swift.Void)? = nil, _ closure: @escaping (T?, Foundation.UUID, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
   public func notifyObservers(_ observable: Self.Observable)
 }
 @objc(ZDKObservationToken) final public class ObservationToken : ObjectiveC.NSObject {
@@ -718,7 +764,7 @@ public enum Rating : Swift.String, Swift.Codable {
     get
   }
 }
-@objc(ZDKRating) public enum ZDKRating : Swift.Int {
+@objc public enum ZDKRating : Swift.Int {
   case none
   case good
   case bad
@@ -757,7 +803,6 @@ extension ChatProvidersSDK.ChatAttachmentError : Swift.Decodable {}
 extension ChatProvidersSDK.ChatAttachmentError : Swift.RawRepresentable {}
 extension ChatProvidersSDK.ChatSettings : Swift.Encodable {}
 extension ChatProvidersSDK.ChatSettings : Swift.Decodable {}
-extension ChatProvidersSDK.ChatLogType : Swift.Equatable {}
 extension ChatProvidersSDK.ChatLogType : Swift.Hashable {}
 extension ChatProvidersSDK.ChatLogType : Swift.RawRepresentable {}
 extension ChatProvidersSDK.VisitorPath : Swift.Encodable {}
