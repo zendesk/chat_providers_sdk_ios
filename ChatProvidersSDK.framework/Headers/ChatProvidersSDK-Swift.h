@@ -211,10 +211,10 @@ enum ZDKChatAccountStatus : NSInteger;
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
-@property (nonatomic, readonly) enum ZDKChatAccountStatus status;
+@property (nonatomic, readonly) enum ZDKChatAccountStatus accountStatus;
 /// <code>[Department]</code> in the chat instance
 @property (nonatomic, readonly, copy) NSArray<ZDKDepartment *> * _Nullable departments;
-- (nonnull instancetype)initWithStatus:(enum ZDKChatAccountStatus)status departments:(NSArray<ZDKDepartment *> * _Nullable)departments OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAccountStatus:(enum ZDKChatAccountStatus)accountStatus departments:(NSArray<ZDKDepartment *> * _Nullable)departments OBJC_DESIGNATED_INITIALIZER;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -225,26 +225,47 @@ SWIFT_CLASS_NAMED("Account")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class ZDKObservationToken;
+
+/// <code>ZDKChatAccountProvider</code> gives the ability to observe account updates.
+SWIFT_CLASS_NAMED("AccountProvider")
+@interface ZDKChatAccountProvider : NSObject
+/// Observe account updates
+/// \param completion block that executes everytime there is an update to the list of <code>Account</code>
+///
+///
+/// returns:
+/// An <code>ObservationToken</code>
+- (ZDKObservationToken * _Nonnull)observeAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface ZDKChatAccountProvider (SWIFT_EXTENSION(ChatProvidersSDK))
+- (void)getAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nullable, NSError * _Nullable))completion;
+@end
+
 /// Account Status
-typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatAccountStatus, "Status", open) {
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatAccountStatus, "AccountStatus", open) {
   ZDKChatAccountStatusOnline = 0,
   ZDKChatAccountStatusOffline = 1,
 };
 
 
 /// The <code>ZDKAgent</code> model has information about an agent in a chat session,
-/// such as their backend <code>id</code>, their display <code>name</code>, their <code>avatar</code>, and if they’re currently typing.
+/// such as their backend <code>id</code> represented as <code>nick</code>, their display <code>name</code>, their <code>avatar</code>, and if they’re currently typing.
 SWIFT_CLASS_NAMED("Agent")
 @interface ZDKAgent : NSObject
 /// ID associated with the agent
-@property (nonatomic, readonly, copy) NSString * _Nonnull id;
+@property (nonatomic, readonly, copy) NSString * _Nonnull nick;
 /// The display name of the agent
-@property (nonatomic, readonly, copy) NSString * _Nonnull name;
+@property (nonatomic, readonly, copy) NSString * _Nonnull displayName;
 /// The URL of the agent’s avatar if it’s present
 @property (nonatomic, readonly, copy) NSURL * _Nullable avatar;
 /// Whether the agent is currently typing in the chat
 @property (nonatomic, readonly) BOOL isTyping;
-- (nonnull instancetype)initWithAvatar:(NSURL * _Nullable)avatar id:(NSString * _Nonnull)id name:(NSString * _Nonnull)name isTyping:(BOOL)isTyping OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAvatar:(NSURL * _Nullable)avatar nick:(NSString * _Nonnull)nick displayName:(NSString * _Nonnull)displayName isTyping:(BOOL)isTyping OBJC_DESIGNATED_INITIALIZER;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -286,6 +307,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChat * _N
 /// Set configuration to start <code>Chat</code> with pre-configured <code>department</code>, <code>visitorInfo</code> and <code>tags</code>.
 /// NOTE: Department can be changed only before the <code>Chat</code> has started. Changing the department during the ongoing <code>Chat</code> is not allowed.
 @property (nonatomic, strong) ZDKChatAPIConfiguration * _Nonnull configuration;
+/// Account Provider
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatAccountProvider * _Nullable accountProvider;)
++ (ZDKChatAccountProvider * _Nullable)accountProvider SWIFT_WARN_UNUSED_RESULT;
 /// Connection Provider
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKConnectionProvider * _Nullable connectionProvider;)
 + (ZDKConnectionProvider * _Nullable)connectionProvider SWIFT_WARN_UNUSED_RESULT;
@@ -301,6 +325,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatProvi
 /// Settings Provider
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsProvider * _Nullable settingsProvider;)
 + (ZDKSettingsProvider * _Nullable)settingsProvider SWIFT_WARN_UNUSED_RESULT;
+/// Account Provider
+@property (nonatomic, readonly, strong) ZDKChatAccountProvider * _Nonnull accountProvider;
 /// Connection Provider
 @property (nonatomic, readonly, strong) ZDKConnectionProvider * _Nonnull connectionProvider;
 /// Push Notifications Provider
@@ -320,6 +346,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 /// Clears the cache
 /// Call this method when leaving the conversation screen
 - (void)clearCache;
+/// Resets the visitor configuration to a clean slate allowing a new visitor to chat
+/// Any ongoing chat will be ended, and locally stored information about the visitor will be cleared
+- (void)resetIdentity;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -411,8 +440,6 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 /// by the visitor.
 SWIFT_CLASS_NAMED("ChatAttachment")
 @interface ZDKChatAttachment : NSObject
-/// Returns a string representing the <code>type</code> of this attachment. Currently this should always be <code>chat.file</code>.
-@property (nonatomic, readonly, copy) NSString * _Nonnull type;
 /// <code>Name</code> of the attachment
 @property (nonatomic, readonly, copy) NSString * _Nonnull name;
 /// <code>Mimetype</code> associated with the attachment
@@ -423,7 +450,7 @@ SWIFT_CLASS_NAMED("ChatAttachment")
 @property (nonatomic, readonly, copy) NSString * _Nonnull url;
 /// The local <code>url</code> where the attachemt is stored
 @property (nonatomic, readonly, copy) NSURL * _Nullable localURL;
-- (nonnull instancetype)initWithName:(NSString * _Nonnull)name mimeType:(NSString * _Nonnull)mimeType size:(NSInteger)size url:(NSString * _Nonnull)url localURL:(NSURL * _Nullable)localURL type:(NSString * _Nonnull)type;
+- (nonnull instancetype)initWithName:(NSString * _Nonnull)name mimeType:(NSString * _Nonnull)mimeType size:(NSInteger)size url:(NSString * _Nonnull)url localURL:(NSURL * _Nullable)localURL;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -451,13 +478,15 @@ SWIFT_CLASS_NAMED("ChatLog")
 /// Display Name
 @property (nonatomic, readonly, copy) NSString * _Nonnull displayName;
 /// Timestamp of when the message was sent
-@property (nonatomic, readonly) NSTimeInterval timestamp;
+@property (nonatomic, readonly) NSTimeInterval createdTimestamp;
+/// Timestamp of when the message was modified
+@property (nonatomic, readonly) NSTimeInterval lastModifiedTimestamp;
 /// The type of event the log is
 @property (nonatomic, readonly) enum ZDKChatLogType type;
 /// Who sent the message can be user/agent/trigger
 @property (nonatomic, readonly) enum ZDKChatParticipant participant;
-/// If the sender of the log is from the visitor
-@property (nonatomic, readonly) BOOL isVisitor;
+/// If the log was created by visitor
+@property (nonatomic, readonly) BOOL createdByVisitor;
 /// A textual representation of this instance.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -488,8 +517,9 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
+@property (nonatomic, readonly, copy) NSString * _Nullable comment;
 /// Message from sender
-@property (nonatomic, readonly, copy) NSString * _Nonnull comment;
+@property (nonatomic, readonly, copy) NSString * _Nonnull newComment;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -552,20 +582,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat Member Join event
 SWIFT_CLASS_NAMED("ChatMemberJoin")
 @interface ZDKChatMemberJoin : ZDKChatLog
-/// The channel id which the agent joined.
-@property (nonatomic, readonly, copy) NSString * _Nonnull channel;
-/// A textual representation of this instance.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
-/// \param object the object to compare against
-///
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 
 
 @interface ZDKChatMemberJoin (SWIFT_EXTENSION(ChatProvidersSDK))
+/// A textual representation of this instance.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
 
@@ -573,12 +597,6 @@ SWIFT_CLASS_NAMED("ChatMemberJoin")
 /// Chat Member Leave event
 SWIFT_CLASS_NAMED("ChatMemberLeave")
 @interface ZDKChatMemberLeave : ZDKChatLog
-/// The channel id which the agent left.
-@property (nonatomic, readonly, copy) NSString * _Nonnull channel;
-/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
-/// \param object the object to compare against
-///
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -623,22 +641,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatParticipant, "ChatParticipant", close
   ZDKChatParticipantSystem = 3,
 };
 
-/// Chat phase describes current state of the session
-typedef SWIFT_ENUM(NSInteger, ChatPhase, open) {
-/// Initialisation phase.
-/// Chat hasn’t started yet
-  ChatPhaseInitialising = 0,
-  ChatPhaseConfiguring = 1,
-/// Chat is ready to send & receive messages
-  ChatPhaseActive = 2,
-/// Chat is ending
-  ChatPhaseEnding = 3,
-/// Chat session has ended
-  ChatPhaseEnded = 4,
-};
-
 @class ZDKChatState;
-@class ZDKObservationToken;
 
 /// The <code>ZDKChatProvider</code> provides APIs to interact and observe the current Chat session.
 /// It provides APIs to:
@@ -661,13 +664,16 @@ typedef SWIFT_ENUM(NSInteger, ChatPhase, open) {
 /// </ul>
 SWIFT_CLASS_NAMED("ChatProvider")
 @interface ZDKChatProvider : NSObject
+/// Current chat state. Defaults to <code>ChatState.initial</code>.
+/// In order to observe updates of <code>ChatState</code>, please use the <code>observeChatState</code> function.
+@property (nonatomic, readonly, strong) ZDKChatState * _Nonnull chatState;
 /// Proactively lets an agent know that the user wants to chat.
 - (void)requestChat;
 /// Let’s the agent know when the visitor is typing.
 /// If <code>true</code>, the visitor typing indicator will appear in agent dashboard, else it will be hidden.
 /// \param isTyping isTyping
 ///
-- (void)setTypingWithIsTyping:(BOOL)isTyping;
+- (void)sendTypingWithIsTyping:(BOOL)isTyping;
 /// Observe changes of the current chat’s state
 /// The conversation thread can be accessed through the <code>logs</code>
 /// \param completion block that executes everytime there is an update to the <code>ChatState</code>
@@ -676,13 +682,6 @@ SWIFT_CLASS_NAMED("ChatProvider")
 /// returns:
 /// An <code>ObservationToken</code> that can cancel the subscription  to the <code>ChatState</code>.
 - (ZDKObservationToken * _Nonnull)observeChatState:(void (^ _Nonnull)(ZDKChatState * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
-/// Observe account updates
-/// \param completion block that executes everytime there is an update to the list of <code>Account</code>
-///
-///
-/// returns:
-/// An <code>ObservationToken</code>
-- (ZDKObservationToken * _Nonnull)observeAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -699,7 +698,7 @@ enum ZDKRating : NSInteger;
 - (void)resendFailedFileWithId:(NSString * _Nonnull)id onProgress:(void (^ _Nullable)(double))onProgress completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendChatRating:(enum ZDKRating)rating completion:(void (^ _Nullable)(enum ZDKRating, NSError * _Nullable))completion;
 - (void)sendChatComment:(NSString * _Nonnull)comment completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
-- (void)getAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nullable, NSError * _Nullable))completion;
+- (void)sendEmailTranscript:(NSString * _Nonnull)email completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)endChat:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
 @end
 
@@ -741,6 +740,20 @@ SWIFT_CLASS_NAMED("ChatRatingRequest")
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
 
+/// Chat session status describes current state of the session
+typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
+/// Initialization status.
+/// Chat hasn’t started yet
+  ChatSessionStatusInitializing = 0,
+  ChatSessionStatusConfiguring = 1,
+/// Chat is ready to send & receive messages
+  ChatSessionStatusStarted = 2,
+/// Chat is ending
+  ChatSessionStatusEnding = 3,
+/// Chat session has ended
+  ChatSessionStatusEnded = 4,
+};
+
 
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
@@ -765,7 +778,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSetti
 
 /// <code>ZDKChatState</code> is a model representation of the current chat session.
 /// Can gather information about the <code>agents</code> in the session, the visitor’s <code>queuePosition</code>,
-/// what <code>phase</code> the chat is in, and the list of <code>logs</code> in the session
+/// what <code>status</code> the chat is in, and the list of <code>logs</code> in the session
 SWIFT_CLASS_NAMED("ChatState")
 @interface ZDKChatState : NSObject
 /// Empty chat state
@@ -779,14 +792,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 @property (nonatomic, readonly, copy) NSArray<ZDKAgent *> * _Nonnull agents;
 /// Whether the chat session is active. If <code>false</code> then the chat has ended.
 @property (nonatomic, readonly) BOOL isChatting;
+/// Chat session id
+@property (nonatomic, readonly, copy) NSString * _Nullable chatId;
 /// Selected department
 @property (nonatomic, readonly, strong) ZDKDepartment * _Nullable department;
 /// Array of ChatLogs that have occured in the chat. eg. Member join/leave, attachments
 @property (nonatomic, readonly, copy) NSArray<ZDKChatLog *> * _Nonnull logs;
 /// Queue position
 @property (nonatomic, strong) ZDKQueuePosition * _Nonnull queuePosition;
-/// The phase of the current chat session.
-@property (nonatomic, readonly) enum ChatPhase chatPhase;
+/// The status of the current chat session.
+@property (nonatomic, readonly) enum ChatSessionStatus chatSessionStatus;
 /// Returns log with given message id
 /// \param id message id
 ///
@@ -797,7 +812,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 
 
 @interface ZDKChatState (SWIFT_EXTENSION(ChatProvidersSDK))
-- (nonnull instancetype)initWithAgents:(NSArray<ZDKAgent *> * _Nonnull)agents isChatting:(BOOL)isChatting department:(ZDKDepartment * _Nullable)department logs:(NSArray<ZDKChatLog *> * _Nonnull)logs queue:(NSInteger)queue comment:(NSString * _Nonnull)comment rating:(enum ZDKRating)rating;
+- (nonnull instancetype)initWithAgents:(NSArray<ZDKAgent *> * _Nonnull)agents isChatting:(BOOL)isChatting chatId:(NSString * _Nullable)chatId department:(ZDKDepartment * _Nullable)department logs:(NSArray<ZDKChatLog *> * _Nonnull)logs queue:(NSInteger)queue comment:(NSString * _Nonnull)comment rating:(enum ZDKRating)rating;
 @end
 
 
@@ -808,42 +823,44 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
-enum ZDKConnectionState : NSInteger;
+enum ZDKConnectionStatus : NSInteger;
 
 /// <code>ZDKConnectionProvider</code> gives the ability to observe connection updates.
 SWIFT_CLASS_NAMED("ConnectionProvider")
 @interface ZDKConnectionProvider : NSObject
-/// The current state of the Connection
-@property (nonatomic, readonly) enum ZDKConnectionState state;
+/// The current status of the Connection
+@property (nonatomic, readonly) enum ZDKConnectionStatus status;
 /// Connect to the session
 - (void)connect;
 /// Disconnect from the current session, closes the socket connection.
 /// Please note, this won’t end the chat session with agent
 - (void)disconnect;
-/// Observe connection state updates. Specify a closure how the state should be handled
-/// \param completion Specify how to handle the <code>ConnectionState</code> via closure.
+/// Observe connection status updates. Specify a closure how the status should be handled
+/// \param completion Specify how to handle the <code>ConnectionStatus</code> via closure.
 ///
 ///
 /// returns:
-/// An <code>ObservationToken</code> that can cancel the subscription to the <code>ConnectionState</code>.
-- (ZDKObservationToken * _Nonnull)observeConnectionState:(void (^ _Nonnull)(enum ZDKConnectionState))completion SWIFT_WARN_UNUSED_RESULT;
+/// An <code>ObservationToken</code> that can cancel the subscription to the <code>ConnectionStatus</code>.
+- (ZDKObservationToken * _Nonnull)observeConnectionStatus:(void (^ _Nonnull)(enum ZDKConnectionStatus))completion SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 /// Represents different states of the<code>ChatSession</code>
-typedef SWIFT_ENUM_NAMED(NSInteger, ZDKConnectionState, "ConnectionState", closed) {
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKConnectionStatus, "ConnectionStatus", open) {
 /// Indicating the client is trying to connect to the backend.
-  ZDKConnectionStateConnecting = 0,
+  ZDKConnectionStatusConnecting = 0,
 /// The <code>ChatSession</code> has connected to the backend and is ready to send/receive messages.
-  ZDKConnectionStateConnected = 1,
+  ZDKConnectionStatusConnected = 1,
 /// The <code>ChatSession</code> has disconnected. Can be caused by network connection, or a user ending
 /// the session with <code>ChatSession.disconnect()</code>
-  ZDKConnectionStateDisconnected = 2,
+  ZDKConnectionStatusDisconnected = 2,
 /// The <code>ChatSession</code> is trying to reconnect to a chat that was already in session.
-  ZDKConnectionStateReconnecting = 3,
+  ZDKConnectionStatusReconnecting = 3,
 /// Failed to reconnect to the web-socket
-  ZDKConnectionStateFailed = 4,
+  ZDKConnectionStatusFailed = 4,
+/// The internet connectivity appears to be offline
+  ZDKConnectionStatusUnreachable = 5,
 };
 
 enum ZDKDepartmentStatus : NSInteger;
@@ -873,6 +890,8 @@ SWIFT_CLASS_NAMED("Department")
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
+
+
 
 
 
@@ -922,6 +941,8 @@ SWIFT_CLASS_NAMED("OfflineForm")
 /// Such as name, email, phone number, tags, and notes related to the visitor and their session.
 SWIFT_CLASS_NAMED("ProfileProvider")
 @interface ZDKProfileProvider : NSObject
+/// Current <code>VisitorInfo</code> model. Defaults to <code>VisitorInfo.initial</code>.
+@property (nonatomic, readonly, strong) ZDKVisitorInfo * _Nonnull visitorInfo;
 /// Observe changes of the current <code>VisitorInfo</code>
 /// \param completion block that executes everytime there is an update to the <code>VisitorInfo</code>
 ///
@@ -949,6 +970,7 @@ SWIFT_CLASS_NAMED("ProfileProvider")
 /// handle session updates, handle connection state, and interact with the APIs in other ways.
 SWIFT_CLASS_NAMED("Providers")
 @interface ZDKChatProviders : NSObject
+@property (nonatomic, readonly, strong) ZDKChatAccountProvider * _Nonnull accountProvider;
 @property (nonatomic, readonly, strong) ZDKConnectionProvider * _Nonnull connectionProvider;
 @property (nonatomic, readonly, strong) ZDKProfileProvider * _Nonnull profileProvider;
 @property (nonatomic, readonly, strong) ZDKPushNotificationsProvider * _Nonnull pushNotificationsProvider;
@@ -1035,6 +1057,8 @@ SWIFT_CLASS_NAMED("QueuePosition")
 /// <code>ZDKSettingsProvider</code> gives the ability to observe settings updates.
 SWIFT_CLASS_NAMED("SettingsProvider")
 @interface ZDKSettingsProvider : NSObject
+/// Current <code>Settings</code> model. Defaults to <code>ChatSettings.initial</code>.
+@property (nonatomic, readonly, strong) ZDKChatSettings * _Nonnull settings;
 /// Observe chat settings model
 /// \param completion Specify how to handle the <code>ChatSettings</code> via closure.
 ///
@@ -1089,16 +1113,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKVisitorIn
 /// If <code>url</code> parameter of <code>VisitorPath</code> is not specified, an <code>ISO8601</code> timestamp will be sent.
 SWIFT_CLASS_NAMED("VisitorPath")
 @interface ZDKVisitorPath : NSObject
-/// Custom event
-@property (nonatomic, readonly, copy) NSString * _Nonnull event;
+/// Custom title
+@property (nonatomic, readonly, copy) NSString * _Nonnull title;
 /// Optional url string. <code>ISO8601</code> timestamp by default.
 @property (nonatomic, readonly, copy) NSString * _Nonnull url;
 /// Initializer for <code>VisitorPath</code> updates
-/// \param event The user-event
+/// \param title The title for user-event
 ///
 /// \param url Another string associated with the event.
 ///
-- (nonnull instancetype)initWithEvent:(NSString * _Nonnull)event url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithTitle:(NSString * _Nonnull)title url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1340,10 +1364,10 @@ enum ZDKChatAccountStatus : NSInteger;
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
-@property (nonatomic, readonly) enum ZDKChatAccountStatus status;
+@property (nonatomic, readonly) enum ZDKChatAccountStatus accountStatus;
 /// <code>[Department]</code> in the chat instance
 @property (nonatomic, readonly, copy) NSArray<ZDKDepartment *> * _Nullable departments;
-- (nonnull instancetype)initWithStatus:(enum ZDKChatAccountStatus)status departments:(NSArray<ZDKDepartment *> * _Nullable)departments OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAccountStatus:(enum ZDKChatAccountStatus)accountStatus departments:(NSArray<ZDKDepartment *> * _Nullable)departments OBJC_DESIGNATED_INITIALIZER;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -1354,26 +1378,47 @@ SWIFT_CLASS_NAMED("Account")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class ZDKObservationToken;
+
+/// <code>ZDKChatAccountProvider</code> gives the ability to observe account updates.
+SWIFT_CLASS_NAMED("AccountProvider")
+@interface ZDKChatAccountProvider : NSObject
+/// Observe account updates
+/// \param completion block that executes everytime there is an update to the list of <code>Account</code>
+///
+///
+/// returns:
+/// An <code>ObservationToken</code>
+- (ZDKObservationToken * _Nonnull)observeAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface ZDKChatAccountProvider (SWIFT_EXTENSION(ChatProvidersSDK))
+- (void)getAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nullable, NSError * _Nullable))completion;
+@end
+
 /// Account Status
-typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatAccountStatus, "Status", open) {
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatAccountStatus, "AccountStatus", open) {
   ZDKChatAccountStatusOnline = 0,
   ZDKChatAccountStatusOffline = 1,
 };
 
 
 /// The <code>ZDKAgent</code> model has information about an agent in a chat session,
-/// such as their backend <code>id</code>, their display <code>name</code>, their <code>avatar</code>, and if they’re currently typing.
+/// such as their backend <code>id</code> represented as <code>nick</code>, their display <code>name</code>, their <code>avatar</code>, and if they’re currently typing.
 SWIFT_CLASS_NAMED("Agent")
 @interface ZDKAgent : NSObject
 /// ID associated with the agent
-@property (nonatomic, readonly, copy) NSString * _Nonnull id;
+@property (nonatomic, readonly, copy) NSString * _Nonnull nick;
 /// The display name of the agent
-@property (nonatomic, readonly, copy) NSString * _Nonnull name;
+@property (nonatomic, readonly, copy) NSString * _Nonnull displayName;
 /// The URL of the agent’s avatar if it’s present
 @property (nonatomic, readonly, copy) NSURL * _Nullable avatar;
 /// Whether the agent is currently typing in the chat
 @property (nonatomic, readonly) BOOL isTyping;
-- (nonnull instancetype)initWithAvatar:(NSURL * _Nullable)avatar id:(NSString * _Nonnull)id name:(NSString * _Nonnull)name isTyping:(BOOL)isTyping OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAvatar:(NSURL * _Nullable)avatar nick:(NSString * _Nonnull)nick displayName:(NSString * _Nonnull)displayName isTyping:(BOOL)isTyping OBJC_DESIGNATED_INITIALIZER;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -1415,6 +1460,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChat * _N
 /// Set configuration to start <code>Chat</code> with pre-configured <code>department</code>, <code>visitorInfo</code> and <code>tags</code>.
 /// NOTE: Department can be changed only before the <code>Chat</code> has started. Changing the department during the ongoing <code>Chat</code> is not allowed.
 @property (nonatomic, strong) ZDKChatAPIConfiguration * _Nonnull configuration;
+/// Account Provider
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatAccountProvider * _Nullable accountProvider;)
++ (ZDKChatAccountProvider * _Nullable)accountProvider SWIFT_WARN_UNUSED_RESULT;
 /// Connection Provider
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKConnectionProvider * _Nullable connectionProvider;)
 + (ZDKConnectionProvider * _Nullable)connectionProvider SWIFT_WARN_UNUSED_RESULT;
@@ -1430,6 +1478,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatProvi
 /// Settings Provider
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsProvider * _Nullable settingsProvider;)
 + (ZDKSettingsProvider * _Nullable)settingsProvider SWIFT_WARN_UNUSED_RESULT;
+/// Account Provider
+@property (nonatomic, readonly, strong) ZDKChatAccountProvider * _Nonnull accountProvider;
 /// Connection Provider
 @property (nonatomic, readonly, strong) ZDKConnectionProvider * _Nonnull connectionProvider;
 /// Push Notifications Provider
@@ -1449,6 +1499,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 /// Clears the cache
 /// Call this method when leaving the conversation screen
 - (void)clearCache;
+/// Resets the visitor configuration to a clean slate allowing a new visitor to chat
+/// Any ongoing chat will be ended, and locally stored information about the visitor will be cleared
+- (void)resetIdentity;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1540,8 +1593,6 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 /// by the visitor.
 SWIFT_CLASS_NAMED("ChatAttachment")
 @interface ZDKChatAttachment : NSObject
-/// Returns a string representing the <code>type</code> of this attachment. Currently this should always be <code>chat.file</code>.
-@property (nonatomic, readonly, copy) NSString * _Nonnull type;
 /// <code>Name</code> of the attachment
 @property (nonatomic, readonly, copy) NSString * _Nonnull name;
 /// <code>Mimetype</code> associated with the attachment
@@ -1552,7 +1603,7 @@ SWIFT_CLASS_NAMED("ChatAttachment")
 @property (nonatomic, readonly, copy) NSString * _Nonnull url;
 /// The local <code>url</code> where the attachemt is stored
 @property (nonatomic, readonly, copy) NSURL * _Nullable localURL;
-- (nonnull instancetype)initWithName:(NSString * _Nonnull)name mimeType:(NSString * _Nonnull)mimeType size:(NSInteger)size url:(NSString * _Nonnull)url localURL:(NSURL * _Nullable)localURL type:(NSString * _Nonnull)type;
+- (nonnull instancetype)initWithName:(NSString * _Nonnull)name mimeType:(NSString * _Nonnull)mimeType size:(NSInteger)size url:(NSString * _Nonnull)url localURL:(NSURL * _Nullable)localURL;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -1580,13 +1631,15 @@ SWIFT_CLASS_NAMED("ChatLog")
 /// Display Name
 @property (nonatomic, readonly, copy) NSString * _Nonnull displayName;
 /// Timestamp of when the message was sent
-@property (nonatomic, readonly) NSTimeInterval timestamp;
+@property (nonatomic, readonly) NSTimeInterval createdTimestamp;
+/// Timestamp of when the message was modified
+@property (nonatomic, readonly) NSTimeInterval lastModifiedTimestamp;
 /// The type of event the log is
 @property (nonatomic, readonly) enum ZDKChatLogType type;
 /// Who sent the message can be user/agent/trigger
 @property (nonatomic, readonly) enum ZDKChatParticipant participant;
-/// If the sender of the log is from the visitor
-@property (nonatomic, readonly) BOOL isVisitor;
+/// If the log was created by visitor
+@property (nonatomic, readonly) BOOL createdByVisitor;
 /// A textual representation of this instance.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -1617,8 +1670,9 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
+@property (nonatomic, readonly, copy) NSString * _Nullable comment;
 /// Message from sender
-@property (nonatomic, readonly, copy) NSString * _Nonnull comment;
+@property (nonatomic, readonly, copy) NSString * _Nonnull newComment;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -1681,20 +1735,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat Member Join event
 SWIFT_CLASS_NAMED("ChatMemberJoin")
 @interface ZDKChatMemberJoin : ZDKChatLog
-/// The channel id which the agent joined.
-@property (nonatomic, readonly, copy) NSString * _Nonnull channel;
-/// A textual representation of this instance.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
-/// \param object the object to compare against
-///
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 
 
 @interface ZDKChatMemberJoin (SWIFT_EXTENSION(ChatProvidersSDK))
+/// A textual representation of this instance.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
 
@@ -1702,12 +1750,6 @@ SWIFT_CLASS_NAMED("ChatMemberJoin")
 /// Chat Member Leave event
 SWIFT_CLASS_NAMED("ChatMemberLeave")
 @interface ZDKChatMemberLeave : ZDKChatLog
-/// The channel id which the agent left.
-@property (nonatomic, readonly, copy) NSString * _Nonnull channel;
-/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
-/// \param object the object to compare against
-///
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -1752,22 +1794,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatParticipant, "ChatParticipant", close
   ZDKChatParticipantSystem = 3,
 };
 
-/// Chat phase describes current state of the session
-typedef SWIFT_ENUM(NSInteger, ChatPhase, open) {
-/// Initialisation phase.
-/// Chat hasn’t started yet
-  ChatPhaseInitialising = 0,
-  ChatPhaseConfiguring = 1,
-/// Chat is ready to send & receive messages
-  ChatPhaseActive = 2,
-/// Chat is ending
-  ChatPhaseEnding = 3,
-/// Chat session has ended
-  ChatPhaseEnded = 4,
-};
-
 @class ZDKChatState;
-@class ZDKObservationToken;
 
 /// The <code>ZDKChatProvider</code> provides APIs to interact and observe the current Chat session.
 /// It provides APIs to:
@@ -1790,13 +1817,16 @@ typedef SWIFT_ENUM(NSInteger, ChatPhase, open) {
 /// </ul>
 SWIFT_CLASS_NAMED("ChatProvider")
 @interface ZDKChatProvider : NSObject
+/// Current chat state. Defaults to <code>ChatState.initial</code>.
+/// In order to observe updates of <code>ChatState</code>, please use the <code>observeChatState</code> function.
+@property (nonatomic, readonly, strong) ZDKChatState * _Nonnull chatState;
 /// Proactively lets an agent know that the user wants to chat.
 - (void)requestChat;
 /// Let’s the agent know when the visitor is typing.
 /// If <code>true</code>, the visitor typing indicator will appear in agent dashboard, else it will be hidden.
 /// \param isTyping isTyping
 ///
-- (void)setTypingWithIsTyping:(BOOL)isTyping;
+- (void)sendTypingWithIsTyping:(BOOL)isTyping;
 /// Observe changes of the current chat’s state
 /// The conversation thread can be accessed through the <code>logs</code>
 /// \param completion block that executes everytime there is an update to the <code>ChatState</code>
@@ -1805,13 +1835,6 @@ SWIFT_CLASS_NAMED("ChatProvider")
 /// returns:
 /// An <code>ObservationToken</code> that can cancel the subscription  to the <code>ChatState</code>.
 - (ZDKObservationToken * _Nonnull)observeChatState:(void (^ _Nonnull)(ZDKChatState * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
-/// Observe account updates
-/// \param completion block that executes everytime there is an update to the list of <code>Account</code>
-///
-///
-/// returns:
-/// An <code>ObservationToken</code>
-- (ZDKObservationToken * _Nonnull)observeAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1828,7 +1851,7 @@ enum ZDKRating : NSInteger;
 - (void)resendFailedFileWithId:(NSString * _Nonnull)id onProgress:(void (^ _Nullable)(double))onProgress completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendChatRating:(enum ZDKRating)rating completion:(void (^ _Nullable)(enum ZDKRating, NSError * _Nullable))completion;
 - (void)sendChatComment:(NSString * _Nonnull)comment completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
-- (void)getAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nullable, NSError * _Nullable))completion;
+- (void)sendEmailTranscript:(NSString * _Nonnull)email completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)endChat:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
 @end
 
@@ -1870,6 +1893,20 @@ SWIFT_CLASS_NAMED("ChatRatingRequest")
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
 
+/// Chat session status describes current state of the session
+typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
+/// Initialization status.
+/// Chat hasn’t started yet
+  ChatSessionStatusInitializing = 0,
+  ChatSessionStatusConfiguring = 1,
+/// Chat is ready to send & receive messages
+  ChatSessionStatusStarted = 2,
+/// Chat is ending
+  ChatSessionStatusEnding = 3,
+/// Chat session has ended
+  ChatSessionStatusEnded = 4,
+};
+
 
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
@@ -1894,7 +1931,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSetti
 
 /// <code>ZDKChatState</code> is a model representation of the current chat session.
 /// Can gather information about the <code>agents</code> in the session, the visitor’s <code>queuePosition</code>,
-/// what <code>phase</code> the chat is in, and the list of <code>logs</code> in the session
+/// what <code>status</code> the chat is in, and the list of <code>logs</code> in the session
 SWIFT_CLASS_NAMED("ChatState")
 @interface ZDKChatState : NSObject
 /// Empty chat state
@@ -1908,14 +1945,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 @property (nonatomic, readonly, copy) NSArray<ZDKAgent *> * _Nonnull agents;
 /// Whether the chat session is active. If <code>false</code> then the chat has ended.
 @property (nonatomic, readonly) BOOL isChatting;
+/// Chat session id
+@property (nonatomic, readonly, copy) NSString * _Nullable chatId;
 /// Selected department
 @property (nonatomic, readonly, strong) ZDKDepartment * _Nullable department;
 /// Array of ChatLogs that have occured in the chat. eg. Member join/leave, attachments
 @property (nonatomic, readonly, copy) NSArray<ZDKChatLog *> * _Nonnull logs;
 /// Queue position
 @property (nonatomic, strong) ZDKQueuePosition * _Nonnull queuePosition;
-/// The phase of the current chat session.
-@property (nonatomic, readonly) enum ChatPhase chatPhase;
+/// The status of the current chat session.
+@property (nonatomic, readonly) enum ChatSessionStatus chatSessionStatus;
 /// Returns log with given message id
 /// \param id message id
 ///
@@ -1926,7 +1965,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 
 
 @interface ZDKChatState (SWIFT_EXTENSION(ChatProvidersSDK))
-- (nonnull instancetype)initWithAgents:(NSArray<ZDKAgent *> * _Nonnull)agents isChatting:(BOOL)isChatting department:(ZDKDepartment * _Nullable)department logs:(NSArray<ZDKChatLog *> * _Nonnull)logs queue:(NSInteger)queue comment:(NSString * _Nonnull)comment rating:(enum ZDKRating)rating;
+- (nonnull instancetype)initWithAgents:(NSArray<ZDKAgent *> * _Nonnull)agents isChatting:(BOOL)isChatting chatId:(NSString * _Nullable)chatId department:(ZDKDepartment * _Nullable)department logs:(NSArray<ZDKChatLog *> * _Nonnull)logs queue:(NSInteger)queue comment:(NSString * _Nonnull)comment rating:(enum ZDKRating)rating;
 @end
 
 
@@ -1937,42 +1976,44 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
-enum ZDKConnectionState : NSInteger;
+enum ZDKConnectionStatus : NSInteger;
 
 /// <code>ZDKConnectionProvider</code> gives the ability to observe connection updates.
 SWIFT_CLASS_NAMED("ConnectionProvider")
 @interface ZDKConnectionProvider : NSObject
-/// The current state of the Connection
-@property (nonatomic, readonly) enum ZDKConnectionState state;
+/// The current status of the Connection
+@property (nonatomic, readonly) enum ZDKConnectionStatus status;
 /// Connect to the session
 - (void)connect;
 /// Disconnect from the current session, closes the socket connection.
 /// Please note, this won’t end the chat session with agent
 - (void)disconnect;
-/// Observe connection state updates. Specify a closure how the state should be handled
-/// \param completion Specify how to handle the <code>ConnectionState</code> via closure.
+/// Observe connection status updates. Specify a closure how the status should be handled
+/// \param completion Specify how to handle the <code>ConnectionStatus</code> via closure.
 ///
 ///
 /// returns:
-/// An <code>ObservationToken</code> that can cancel the subscription to the <code>ConnectionState</code>.
-- (ZDKObservationToken * _Nonnull)observeConnectionState:(void (^ _Nonnull)(enum ZDKConnectionState))completion SWIFT_WARN_UNUSED_RESULT;
+/// An <code>ObservationToken</code> that can cancel the subscription to the <code>ConnectionStatus</code>.
+- (ZDKObservationToken * _Nonnull)observeConnectionStatus:(void (^ _Nonnull)(enum ZDKConnectionStatus))completion SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 /// Represents different states of the<code>ChatSession</code>
-typedef SWIFT_ENUM_NAMED(NSInteger, ZDKConnectionState, "ConnectionState", closed) {
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKConnectionStatus, "ConnectionStatus", open) {
 /// Indicating the client is trying to connect to the backend.
-  ZDKConnectionStateConnecting = 0,
+  ZDKConnectionStatusConnecting = 0,
 /// The <code>ChatSession</code> has connected to the backend and is ready to send/receive messages.
-  ZDKConnectionStateConnected = 1,
+  ZDKConnectionStatusConnected = 1,
 /// The <code>ChatSession</code> has disconnected. Can be caused by network connection, or a user ending
 /// the session with <code>ChatSession.disconnect()</code>
-  ZDKConnectionStateDisconnected = 2,
+  ZDKConnectionStatusDisconnected = 2,
 /// The <code>ChatSession</code> is trying to reconnect to a chat that was already in session.
-  ZDKConnectionStateReconnecting = 3,
+  ZDKConnectionStatusReconnecting = 3,
 /// Failed to reconnect to the web-socket
-  ZDKConnectionStateFailed = 4,
+  ZDKConnectionStatusFailed = 4,
+/// The internet connectivity appears to be offline
+  ZDKConnectionStatusUnreachable = 5,
 };
 
 enum ZDKDepartmentStatus : NSInteger;
@@ -2002,6 +2043,8 @@ SWIFT_CLASS_NAMED("Department")
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
+
+
 
 
 
@@ -2051,6 +2094,8 @@ SWIFT_CLASS_NAMED("OfflineForm")
 /// Such as name, email, phone number, tags, and notes related to the visitor and their session.
 SWIFT_CLASS_NAMED("ProfileProvider")
 @interface ZDKProfileProvider : NSObject
+/// Current <code>VisitorInfo</code> model. Defaults to <code>VisitorInfo.initial</code>.
+@property (nonatomic, readonly, strong) ZDKVisitorInfo * _Nonnull visitorInfo;
 /// Observe changes of the current <code>VisitorInfo</code>
 /// \param completion block that executes everytime there is an update to the <code>VisitorInfo</code>
 ///
@@ -2078,6 +2123,7 @@ SWIFT_CLASS_NAMED("ProfileProvider")
 /// handle session updates, handle connection state, and interact with the APIs in other ways.
 SWIFT_CLASS_NAMED("Providers")
 @interface ZDKChatProviders : NSObject
+@property (nonatomic, readonly, strong) ZDKChatAccountProvider * _Nonnull accountProvider;
 @property (nonatomic, readonly, strong) ZDKConnectionProvider * _Nonnull connectionProvider;
 @property (nonatomic, readonly, strong) ZDKProfileProvider * _Nonnull profileProvider;
 @property (nonatomic, readonly, strong) ZDKPushNotificationsProvider * _Nonnull pushNotificationsProvider;
@@ -2164,6 +2210,8 @@ SWIFT_CLASS_NAMED("QueuePosition")
 /// <code>ZDKSettingsProvider</code> gives the ability to observe settings updates.
 SWIFT_CLASS_NAMED("SettingsProvider")
 @interface ZDKSettingsProvider : NSObject
+/// Current <code>Settings</code> model. Defaults to <code>ChatSettings.initial</code>.
+@property (nonatomic, readonly, strong) ZDKChatSettings * _Nonnull settings;
 /// Observe chat settings model
 /// \param completion Specify how to handle the <code>ChatSettings</code> via closure.
 ///
@@ -2218,16 +2266,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKVisitorIn
 /// If <code>url</code> parameter of <code>VisitorPath</code> is not specified, an <code>ISO8601</code> timestamp will be sent.
 SWIFT_CLASS_NAMED("VisitorPath")
 @interface ZDKVisitorPath : NSObject
-/// Custom event
-@property (nonatomic, readonly, copy) NSString * _Nonnull event;
+/// Custom title
+@property (nonatomic, readonly, copy) NSString * _Nonnull title;
 /// Optional url string. <code>ISO8601</code> timestamp by default.
 @property (nonatomic, readonly, copy) NSString * _Nonnull url;
 /// Initializer for <code>VisitorPath</code> updates
-/// \param event The user-event
+/// \param title The title for user-event
 ///
 /// \param url Another string associated with the event.
 ///
-- (nonnull instancetype)initWithEvent:(NSString * _Nonnull)event url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithTitle:(NSString * _Nonnull)title url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2472,10 +2520,10 @@ enum ZDKChatAccountStatus : NSInteger;
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
-@property (nonatomic, readonly) enum ZDKChatAccountStatus status;
+@property (nonatomic, readonly) enum ZDKChatAccountStatus accountStatus;
 /// <code>[Department]</code> in the chat instance
 @property (nonatomic, readonly, copy) NSArray<ZDKDepartment *> * _Nullable departments;
-- (nonnull instancetype)initWithStatus:(enum ZDKChatAccountStatus)status departments:(NSArray<ZDKDepartment *> * _Nullable)departments OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAccountStatus:(enum ZDKChatAccountStatus)accountStatus departments:(NSArray<ZDKDepartment *> * _Nullable)departments OBJC_DESIGNATED_INITIALIZER;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -2486,26 +2534,47 @@ SWIFT_CLASS_NAMED("Account")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class ZDKObservationToken;
+
+/// <code>ZDKChatAccountProvider</code> gives the ability to observe account updates.
+SWIFT_CLASS_NAMED("AccountProvider")
+@interface ZDKChatAccountProvider : NSObject
+/// Observe account updates
+/// \param completion block that executes everytime there is an update to the list of <code>Account</code>
+///
+///
+/// returns:
+/// An <code>ObservationToken</code>
+- (ZDKObservationToken * _Nonnull)observeAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface ZDKChatAccountProvider (SWIFT_EXTENSION(ChatProvidersSDK))
+- (void)getAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nullable, NSError * _Nullable))completion;
+@end
+
 /// Account Status
-typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatAccountStatus, "Status", open) {
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatAccountStatus, "AccountStatus", open) {
   ZDKChatAccountStatusOnline = 0,
   ZDKChatAccountStatusOffline = 1,
 };
 
 
 /// The <code>ZDKAgent</code> model has information about an agent in a chat session,
-/// such as their backend <code>id</code>, their display <code>name</code>, their <code>avatar</code>, and if they’re currently typing.
+/// such as their backend <code>id</code> represented as <code>nick</code>, their display <code>name</code>, their <code>avatar</code>, and if they’re currently typing.
 SWIFT_CLASS_NAMED("Agent")
 @interface ZDKAgent : NSObject
 /// ID associated with the agent
-@property (nonatomic, readonly, copy) NSString * _Nonnull id;
+@property (nonatomic, readonly, copy) NSString * _Nonnull nick;
 /// The display name of the agent
-@property (nonatomic, readonly, copy) NSString * _Nonnull name;
+@property (nonatomic, readonly, copy) NSString * _Nonnull displayName;
 /// The URL of the agent’s avatar if it’s present
 @property (nonatomic, readonly, copy) NSURL * _Nullable avatar;
 /// Whether the agent is currently typing in the chat
 @property (nonatomic, readonly) BOOL isTyping;
-- (nonnull instancetype)initWithAvatar:(NSURL * _Nullable)avatar id:(NSString * _Nonnull)id name:(NSString * _Nonnull)name isTyping:(BOOL)isTyping OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAvatar:(NSURL * _Nullable)avatar nick:(NSString * _Nonnull)nick displayName:(NSString * _Nonnull)displayName isTyping:(BOOL)isTyping OBJC_DESIGNATED_INITIALIZER;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -2547,6 +2616,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChat * _N
 /// Set configuration to start <code>Chat</code> with pre-configured <code>department</code>, <code>visitorInfo</code> and <code>tags</code>.
 /// NOTE: Department can be changed only before the <code>Chat</code> has started. Changing the department during the ongoing <code>Chat</code> is not allowed.
 @property (nonatomic, strong) ZDKChatAPIConfiguration * _Nonnull configuration;
+/// Account Provider
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatAccountProvider * _Nullable accountProvider;)
++ (ZDKChatAccountProvider * _Nullable)accountProvider SWIFT_WARN_UNUSED_RESULT;
 /// Connection Provider
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKConnectionProvider * _Nullable connectionProvider;)
 + (ZDKConnectionProvider * _Nullable)connectionProvider SWIFT_WARN_UNUSED_RESULT;
@@ -2562,6 +2634,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatProvi
 /// Settings Provider
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsProvider * _Nullable settingsProvider;)
 + (ZDKSettingsProvider * _Nullable)settingsProvider SWIFT_WARN_UNUSED_RESULT;
+/// Account Provider
+@property (nonatomic, readonly, strong) ZDKChatAccountProvider * _Nonnull accountProvider;
 /// Connection Provider
 @property (nonatomic, readonly, strong) ZDKConnectionProvider * _Nonnull connectionProvider;
 /// Push Notifications Provider
@@ -2581,6 +2655,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 /// Clears the cache
 /// Call this method when leaving the conversation screen
 - (void)clearCache;
+/// Resets the visitor configuration to a clean slate allowing a new visitor to chat
+/// Any ongoing chat will be ended, and locally stored information about the visitor will be cleared
+- (void)resetIdentity;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2672,8 +2749,6 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 /// by the visitor.
 SWIFT_CLASS_NAMED("ChatAttachment")
 @interface ZDKChatAttachment : NSObject
-/// Returns a string representing the <code>type</code> of this attachment. Currently this should always be <code>chat.file</code>.
-@property (nonatomic, readonly, copy) NSString * _Nonnull type;
 /// <code>Name</code> of the attachment
 @property (nonatomic, readonly, copy) NSString * _Nonnull name;
 /// <code>Mimetype</code> associated with the attachment
@@ -2684,7 +2759,7 @@ SWIFT_CLASS_NAMED("ChatAttachment")
 @property (nonatomic, readonly, copy) NSString * _Nonnull url;
 /// The local <code>url</code> where the attachemt is stored
 @property (nonatomic, readonly, copy) NSURL * _Nullable localURL;
-- (nonnull instancetype)initWithName:(NSString * _Nonnull)name mimeType:(NSString * _Nonnull)mimeType size:(NSInteger)size url:(NSString * _Nonnull)url localURL:(NSURL * _Nullable)localURL type:(NSString * _Nonnull)type;
+- (nonnull instancetype)initWithName:(NSString * _Nonnull)name mimeType:(NSString * _Nonnull)mimeType size:(NSInteger)size url:(NSString * _Nonnull)url localURL:(NSURL * _Nullable)localURL;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -2712,13 +2787,15 @@ SWIFT_CLASS_NAMED("ChatLog")
 /// Display Name
 @property (nonatomic, readonly, copy) NSString * _Nonnull displayName;
 /// Timestamp of when the message was sent
-@property (nonatomic, readonly) NSTimeInterval timestamp;
+@property (nonatomic, readonly) NSTimeInterval createdTimestamp;
+/// Timestamp of when the message was modified
+@property (nonatomic, readonly) NSTimeInterval lastModifiedTimestamp;
 /// The type of event the log is
 @property (nonatomic, readonly) enum ZDKChatLogType type;
 /// Who sent the message can be user/agent/trigger
 @property (nonatomic, readonly) enum ZDKChatParticipant participant;
-/// If the sender of the log is from the visitor
-@property (nonatomic, readonly) BOOL isVisitor;
+/// If the log was created by visitor
+@property (nonatomic, readonly) BOOL createdByVisitor;
 /// A textual representation of this instance.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -2749,8 +2826,9 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
+@property (nonatomic, readonly, copy) NSString * _Nullable comment;
 /// Message from sender
-@property (nonatomic, readonly, copy) NSString * _Nonnull comment;
+@property (nonatomic, readonly, copy) NSString * _Nonnull newComment;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -2813,20 +2891,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat Member Join event
 SWIFT_CLASS_NAMED("ChatMemberJoin")
 @interface ZDKChatMemberJoin : ZDKChatLog
-/// The channel id which the agent joined.
-@property (nonatomic, readonly, copy) NSString * _Nonnull channel;
-/// A textual representation of this instance.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
-/// \param object the object to compare against
-///
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 
 
 @interface ZDKChatMemberJoin (SWIFT_EXTENSION(ChatProvidersSDK))
+/// A textual representation of this instance.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
 
@@ -2834,12 +2906,6 @@ SWIFT_CLASS_NAMED("ChatMemberJoin")
 /// Chat Member Leave event
 SWIFT_CLASS_NAMED("ChatMemberLeave")
 @interface ZDKChatMemberLeave : ZDKChatLog
-/// The channel id which the agent left.
-@property (nonatomic, readonly, copy) NSString * _Nonnull channel;
-/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
-/// \param object the object to compare against
-///
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -2884,22 +2950,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatParticipant, "ChatParticipant", close
   ZDKChatParticipantSystem = 3,
 };
 
-/// Chat phase describes current state of the session
-typedef SWIFT_ENUM(NSInteger, ChatPhase, open) {
-/// Initialisation phase.
-/// Chat hasn’t started yet
-  ChatPhaseInitialising = 0,
-  ChatPhaseConfiguring = 1,
-/// Chat is ready to send & receive messages
-  ChatPhaseActive = 2,
-/// Chat is ending
-  ChatPhaseEnding = 3,
-/// Chat session has ended
-  ChatPhaseEnded = 4,
-};
-
 @class ZDKChatState;
-@class ZDKObservationToken;
 
 /// The <code>ZDKChatProvider</code> provides APIs to interact and observe the current Chat session.
 /// It provides APIs to:
@@ -2922,13 +2973,16 @@ typedef SWIFT_ENUM(NSInteger, ChatPhase, open) {
 /// </ul>
 SWIFT_CLASS_NAMED("ChatProvider")
 @interface ZDKChatProvider : NSObject
+/// Current chat state. Defaults to <code>ChatState.initial</code>.
+/// In order to observe updates of <code>ChatState</code>, please use the <code>observeChatState</code> function.
+@property (nonatomic, readonly, strong) ZDKChatState * _Nonnull chatState;
 /// Proactively lets an agent know that the user wants to chat.
 - (void)requestChat;
 /// Let’s the agent know when the visitor is typing.
 /// If <code>true</code>, the visitor typing indicator will appear in agent dashboard, else it will be hidden.
 /// \param isTyping isTyping
 ///
-- (void)setTypingWithIsTyping:(BOOL)isTyping;
+- (void)sendTypingWithIsTyping:(BOOL)isTyping;
 /// Observe changes of the current chat’s state
 /// The conversation thread can be accessed through the <code>logs</code>
 /// \param completion block that executes everytime there is an update to the <code>ChatState</code>
@@ -2937,13 +2991,6 @@ SWIFT_CLASS_NAMED("ChatProvider")
 /// returns:
 /// An <code>ObservationToken</code> that can cancel the subscription  to the <code>ChatState</code>.
 - (ZDKObservationToken * _Nonnull)observeChatState:(void (^ _Nonnull)(ZDKChatState * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
-/// Observe account updates
-/// \param completion block that executes everytime there is an update to the list of <code>Account</code>
-///
-///
-/// returns:
-/// An <code>ObservationToken</code>
-- (ZDKObservationToken * _Nonnull)observeAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2960,7 +3007,7 @@ enum ZDKRating : NSInteger;
 - (void)resendFailedFileWithId:(NSString * _Nonnull)id onProgress:(void (^ _Nullable)(double))onProgress completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendChatRating:(enum ZDKRating)rating completion:(void (^ _Nullable)(enum ZDKRating, NSError * _Nullable))completion;
 - (void)sendChatComment:(NSString * _Nonnull)comment completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
-- (void)getAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nullable, NSError * _Nullable))completion;
+- (void)sendEmailTranscript:(NSString * _Nonnull)email completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)endChat:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
 @end
 
@@ -3002,6 +3049,20 @@ SWIFT_CLASS_NAMED("ChatRatingRequest")
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
 
+/// Chat session status describes current state of the session
+typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
+/// Initialization status.
+/// Chat hasn’t started yet
+  ChatSessionStatusInitializing = 0,
+  ChatSessionStatusConfiguring = 1,
+/// Chat is ready to send & receive messages
+  ChatSessionStatusStarted = 2,
+/// Chat is ending
+  ChatSessionStatusEnding = 3,
+/// Chat session has ended
+  ChatSessionStatusEnded = 4,
+};
+
 
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
@@ -3026,7 +3087,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSetti
 
 /// <code>ZDKChatState</code> is a model representation of the current chat session.
 /// Can gather information about the <code>agents</code> in the session, the visitor’s <code>queuePosition</code>,
-/// what <code>phase</code> the chat is in, and the list of <code>logs</code> in the session
+/// what <code>status</code> the chat is in, and the list of <code>logs</code> in the session
 SWIFT_CLASS_NAMED("ChatState")
 @interface ZDKChatState : NSObject
 /// Empty chat state
@@ -3040,14 +3101,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 @property (nonatomic, readonly, copy) NSArray<ZDKAgent *> * _Nonnull agents;
 /// Whether the chat session is active. If <code>false</code> then the chat has ended.
 @property (nonatomic, readonly) BOOL isChatting;
+/// Chat session id
+@property (nonatomic, readonly, copy) NSString * _Nullable chatId;
 /// Selected department
 @property (nonatomic, readonly, strong) ZDKDepartment * _Nullable department;
 /// Array of ChatLogs that have occured in the chat. eg. Member join/leave, attachments
 @property (nonatomic, readonly, copy) NSArray<ZDKChatLog *> * _Nonnull logs;
 /// Queue position
 @property (nonatomic, strong) ZDKQueuePosition * _Nonnull queuePosition;
-/// The phase of the current chat session.
-@property (nonatomic, readonly) enum ChatPhase chatPhase;
+/// The status of the current chat session.
+@property (nonatomic, readonly) enum ChatSessionStatus chatSessionStatus;
 /// Returns log with given message id
 /// \param id message id
 ///
@@ -3058,7 +3121,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 
 
 @interface ZDKChatState (SWIFT_EXTENSION(ChatProvidersSDK))
-- (nonnull instancetype)initWithAgents:(NSArray<ZDKAgent *> * _Nonnull)agents isChatting:(BOOL)isChatting department:(ZDKDepartment * _Nullable)department logs:(NSArray<ZDKChatLog *> * _Nonnull)logs queue:(NSInteger)queue comment:(NSString * _Nonnull)comment rating:(enum ZDKRating)rating;
+- (nonnull instancetype)initWithAgents:(NSArray<ZDKAgent *> * _Nonnull)agents isChatting:(BOOL)isChatting chatId:(NSString * _Nullable)chatId department:(ZDKDepartment * _Nullable)department logs:(NSArray<ZDKChatLog *> * _Nonnull)logs queue:(NSInteger)queue comment:(NSString * _Nonnull)comment rating:(enum ZDKRating)rating;
 @end
 
 
@@ -3069,42 +3132,44 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
-enum ZDKConnectionState : NSInteger;
+enum ZDKConnectionStatus : NSInteger;
 
 /// <code>ZDKConnectionProvider</code> gives the ability to observe connection updates.
 SWIFT_CLASS_NAMED("ConnectionProvider")
 @interface ZDKConnectionProvider : NSObject
-/// The current state of the Connection
-@property (nonatomic, readonly) enum ZDKConnectionState state;
+/// The current status of the Connection
+@property (nonatomic, readonly) enum ZDKConnectionStatus status;
 /// Connect to the session
 - (void)connect;
 /// Disconnect from the current session, closes the socket connection.
 /// Please note, this won’t end the chat session with agent
 - (void)disconnect;
-/// Observe connection state updates. Specify a closure how the state should be handled
-/// \param completion Specify how to handle the <code>ConnectionState</code> via closure.
+/// Observe connection status updates. Specify a closure how the status should be handled
+/// \param completion Specify how to handle the <code>ConnectionStatus</code> via closure.
 ///
 ///
 /// returns:
-/// An <code>ObservationToken</code> that can cancel the subscription to the <code>ConnectionState</code>.
-- (ZDKObservationToken * _Nonnull)observeConnectionState:(void (^ _Nonnull)(enum ZDKConnectionState))completion SWIFT_WARN_UNUSED_RESULT;
+/// An <code>ObservationToken</code> that can cancel the subscription to the <code>ConnectionStatus</code>.
+- (ZDKObservationToken * _Nonnull)observeConnectionStatus:(void (^ _Nonnull)(enum ZDKConnectionStatus))completion SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 /// Represents different states of the<code>ChatSession</code>
-typedef SWIFT_ENUM_NAMED(NSInteger, ZDKConnectionState, "ConnectionState", closed) {
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKConnectionStatus, "ConnectionStatus", open) {
 /// Indicating the client is trying to connect to the backend.
-  ZDKConnectionStateConnecting = 0,
+  ZDKConnectionStatusConnecting = 0,
 /// The <code>ChatSession</code> has connected to the backend and is ready to send/receive messages.
-  ZDKConnectionStateConnected = 1,
+  ZDKConnectionStatusConnected = 1,
 /// The <code>ChatSession</code> has disconnected. Can be caused by network connection, or a user ending
 /// the session with <code>ChatSession.disconnect()</code>
-  ZDKConnectionStateDisconnected = 2,
+  ZDKConnectionStatusDisconnected = 2,
 /// The <code>ChatSession</code> is trying to reconnect to a chat that was already in session.
-  ZDKConnectionStateReconnecting = 3,
+  ZDKConnectionStatusReconnecting = 3,
 /// Failed to reconnect to the web-socket
-  ZDKConnectionStateFailed = 4,
+  ZDKConnectionStatusFailed = 4,
+/// The internet connectivity appears to be offline
+  ZDKConnectionStatusUnreachable = 5,
 };
 
 enum ZDKDepartmentStatus : NSInteger;
@@ -3134,6 +3199,8 @@ SWIFT_CLASS_NAMED("Department")
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
+
+
 
 
 
@@ -3183,6 +3250,8 @@ SWIFT_CLASS_NAMED("OfflineForm")
 /// Such as name, email, phone number, tags, and notes related to the visitor and their session.
 SWIFT_CLASS_NAMED("ProfileProvider")
 @interface ZDKProfileProvider : NSObject
+/// Current <code>VisitorInfo</code> model. Defaults to <code>VisitorInfo.initial</code>.
+@property (nonatomic, readonly, strong) ZDKVisitorInfo * _Nonnull visitorInfo;
 /// Observe changes of the current <code>VisitorInfo</code>
 /// \param completion block that executes everytime there is an update to the <code>VisitorInfo</code>
 ///
@@ -3210,6 +3279,7 @@ SWIFT_CLASS_NAMED("ProfileProvider")
 /// handle session updates, handle connection state, and interact with the APIs in other ways.
 SWIFT_CLASS_NAMED("Providers")
 @interface ZDKChatProviders : NSObject
+@property (nonatomic, readonly, strong) ZDKChatAccountProvider * _Nonnull accountProvider;
 @property (nonatomic, readonly, strong) ZDKConnectionProvider * _Nonnull connectionProvider;
 @property (nonatomic, readonly, strong) ZDKProfileProvider * _Nonnull profileProvider;
 @property (nonatomic, readonly, strong) ZDKPushNotificationsProvider * _Nonnull pushNotificationsProvider;
@@ -3296,6 +3366,8 @@ SWIFT_CLASS_NAMED("QueuePosition")
 /// <code>ZDKSettingsProvider</code> gives the ability to observe settings updates.
 SWIFT_CLASS_NAMED("SettingsProvider")
 @interface ZDKSettingsProvider : NSObject
+/// Current <code>Settings</code> model. Defaults to <code>ChatSettings.initial</code>.
+@property (nonatomic, readonly, strong) ZDKChatSettings * _Nonnull settings;
 /// Observe chat settings model
 /// \param completion Specify how to handle the <code>ChatSettings</code> via closure.
 ///
@@ -3350,16 +3422,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKVisitorIn
 /// If <code>url</code> parameter of <code>VisitorPath</code> is not specified, an <code>ISO8601</code> timestamp will be sent.
 SWIFT_CLASS_NAMED("VisitorPath")
 @interface ZDKVisitorPath : NSObject
-/// Custom event
-@property (nonatomic, readonly, copy) NSString * _Nonnull event;
+/// Custom title
+@property (nonatomic, readonly, copy) NSString * _Nonnull title;
 /// Optional url string. <code>ISO8601</code> timestamp by default.
 @property (nonatomic, readonly, copy) NSString * _Nonnull url;
 /// Initializer for <code>VisitorPath</code> updates
-/// \param event The user-event
+/// \param title The title for user-event
 ///
 /// \param url Another string associated with the event.
 ///
-- (nonnull instancetype)initWithEvent:(NSString * _Nonnull)event url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithTitle:(NSString * _Nonnull)title url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3601,10 +3673,10 @@ enum ZDKChatAccountStatus : NSInteger;
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
-@property (nonatomic, readonly) enum ZDKChatAccountStatus status;
+@property (nonatomic, readonly) enum ZDKChatAccountStatus accountStatus;
 /// <code>[Department]</code> in the chat instance
 @property (nonatomic, readonly, copy) NSArray<ZDKDepartment *> * _Nullable departments;
-- (nonnull instancetype)initWithStatus:(enum ZDKChatAccountStatus)status departments:(NSArray<ZDKDepartment *> * _Nullable)departments OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAccountStatus:(enum ZDKChatAccountStatus)accountStatus departments:(NSArray<ZDKDepartment *> * _Nullable)departments OBJC_DESIGNATED_INITIALIZER;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -3615,26 +3687,47 @@ SWIFT_CLASS_NAMED("Account")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class ZDKObservationToken;
+
+/// <code>ZDKChatAccountProvider</code> gives the ability to observe account updates.
+SWIFT_CLASS_NAMED("AccountProvider")
+@interface ZDKChatAccountProvider : NSObject
+/// Observe account updates
+/// \param completion block that executes everytime there is an update to the list of <code>Account</code>
+///
+///
+/// returns:
+/// An <code>ObservationToken</code>
+- (ZDKObservationToken * _Nonnull)observeAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+@interface ZDKChatAccountProvider (SWIFT_EXTENSION(ChatProvidersSDK))
+- (void)getAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nullable, NSError * _Nullable))completion;
+@end
+
 /// Account Status
-typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatAccountStatus, "Status", open) {
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatAccountStatus, "AccountStatus", open) {
   ZDKChatAccountStatusOnline = 0,
   ZDKChatAccountStatusOffline = 1,
 };
 
 
 /// The <code>ZDKAgent</code> model has information about an agent in a chat session,
-/// such as their backend <code>id</code>, their display <code>name</code>, their <code>avatar</code>, and if they’re currently typing.
+/// such as their backend <code>id</code> represented as <code>nick</code>, their display <code>name</code>, their <code>avatar</code>, and if they’re currently typing.
 SWIFT_CLASS_NAMED("Agent")
 @interface ZDKAgent : NSObject
 /// ID associated with the agent
-@property (nonatomic, readonly, copy) NSString * _Nonnull id;
+@property (nonatomic, readonly, copy) NSString * _Nonnull nick;
 /// The display name of the agent
-@property (nonatomic, readonly, copy) NSString * _Nonnull name;
+@property (nonatomic, readonly, copy) NSString * _Nonnull displayName;
 /// The URL of the agent’s avatar if it’s present
 @property (nonatomic, readonly, copy) NSURL * _Nullable avatar;
 /// Whether the agent is currently typing in the chat
 @property (nonatomic, readonly) BOOL isTyping;
-- (nonnull instancetype)initWithAvatar:(NSURL * _Nullable)avatar id:(NSString * _Nonnull)id name:(NSString * _Nonnull)name isTyping:(BOOL)isTyping OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithAvatar:(NSURL * _Nullable)avatar nick:(NSString * _Nonnull)nick displayName:(NSString * _Nonnull)displayName isTyping:(BOOL)isTyping OBJC_DESIGNATED_INITIALIZER;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -3676,6 +3769,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChat * _N
 /// Set configuration to start <code>Chat</code> with pre-configured <code>department</code>, <code>visitorInfo</code> and <code>tags</code>.
 /// NOTE: Department can be changed only before the <code>Chat</code> has started. Changing the department during the ongoing <code>Chat</code> is not allowed.
 @property (nonatomic, strong) ZDKChatAPIConfiguration * _Nonnull configuration;
+/// Account Provider
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatAccountProvider * _Nullable accountProvider;)
++ (ZDKChatAccountProvider * _Nullable)accountProvider SWIFT_WARN_UNUSED_RESULT;
 /// Connection Provider
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKConnectionProvider * _Nullable connectionProvider;)
 + (ZDKConnectionProvider * _Nullable)connectionProvider SWIFT_WARN_UNUSED_RESULT;
@@ -3691,6 +3787,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatProvi
 /// Settings Provider
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsProvider * _Nullable settingsProvider;)
 + (ZDKSettingsProvider * _Nullable)settingsProvider SWIFT_WARN_UNUSED_RESULT;
+/// Account Provider
+@property (nonatomic, readonly, strong) ZDKChatAccountProvider * _Nonnull accountProvider;
 /// Connection Provider
 @property (nonatomic, readonly, strong) ZDKConnectionProvider * _Nonnull connectionProvider;
 /// Push Notifications Provider
@@ -3710,6 +3808,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 /// Clears the cache
 /// Call this method when leaving the conversation screen
 - (void)clearCache;
+/// Resets the visitor configuration to a clean slate allowing a new visitor to chat
+/// Any ongoing chat will be ended, and locally stored information about the visitor will be cleared
+- (void)resetIdentity;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3801,8 +3902,6 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 /// by the visitor.
 SWIFT_CLASS_NAMED("ChatAttachment")
 @interface ZDKChatAttachment : NSObject
-/// Returns a string representing the <code>type</code> of this attachment. Currently this should always be <code>chat.file</code>.
-@property (nonatomic, readonly, copy) NSString * _Nonnull type;
 /// <code>Name</code> of the attachment
 @property (nonatomic, readonly, copy) NSString * _Nonnull name;
 /// <code>Mimetype</code> associated with the attachment
@@ -3813,7 +3912,7 @@ SWIFT_CLASS_NAMED("ChatAttachment")
 @property (nonatomic, readonly, copy) NSString * _Nonnull url;
 /// The local <code>url</code> where the attachemt is stored
 @property (nonatomic, readonly, copy) NSURL * _Nullable localURL;
-- (nonnull instancetype)initWithName:(NSString * _Nonnull)name mimeType:(NSString * _Nonnull)mimeType size:(NSInteger)size url:(NSString * _Nonnull)url localURL:(NSURL * _Nullable)localURL type:(NSString * _Nonnull)type;
+- (nonnull instancetype)initWithName:(NSString * _Nonnull)name mimeType:(NSString * _Nonnull)mimeType size:(NSInteger)size url:(NSString * _Nonnull)url localURL:(NSURL * _Nullable)localURL;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -3841,13 +3940,15 @@ SWIFT_CLASS_NAMED("ChatLog")
 /// Display Name
 @property (nonatomic, readonly, copy) NSString * _Nonnull displayName;
 /// Timestamp of when the message was sent
-@property (nonatomic, readonly) NSTimeInterval timestamp;
+@property (nonatomic, readonly) NSTimeInterval createdTimestamp;
+/// Timestamp of when the message was modified
+@property (nonatomic, readonly) NSTimeInterval lastModifiedTimestamp;
 /// The type of event the log is
 @property (nonatomic, readonly) enum ZDKChatLogType type;
 /// Who sent the message can be user/agent/trigger
 @property (nonatomic, readonly) enum ZDKChatParticipant participant;
-/// If the sender of the log is from the visitor
-@property (nonatomic, readonly) BOOL isVisitor;
+/// If the log was created by visitor
+@property (nonatomic, readonly) BOOL createdByVisitor;
 /// A textual representation of this instance.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -3878,8 +3979,9 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
+@property (nonatomic, readonly, copy) NSString * _Nullable comment;
 /// Message from sender
-@property (nonatomic, readonly, copy) NSString * _Nonnull comment;
+@property (nonatomic, readonly, copy) NSString * _Nonnull newComment;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
 ///
@@ -3942,20 +4044,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat Member Join event
 SWIFT_CLASS_NAMED("ChatMemberJoin")
 @interface ZDKChatMemberJoin : ZDKChatLog
-/// The channel id which the agent joined.
-@property (nonatomic, readonly, copy) NSString * _Nonnull channel;
-/// A textual representation of this instance.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
-/// \param object the object to compare against
-///
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
 
 
 @interface ZDKChatMemberJoin (SWIFT_EXTENSION(ChatProvidersSDK))
+/// A textual representation of this instance.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
 
@@ -3963,12 +4059,6 @@ SWIFT_CLASS_NAMED("ChatMemberJoin")
 /// Chat Member Leave event
 SWIFT_CLASS_NAMED("ChatMemberLeave")
 @interface ZDKChatMemberLeave : ZDKChatLog
-/// The channel id which the agent left.
-@property (nonatomic, readonly, copy) NSString * _Nonnull channel;
-/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
-/// \param object the object to compare against
-///
-- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -4013,22 +4103,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatParticipant, "ChatParticipant", close
   ZDKChatParticipantSystem = 3,
 };
 
-/// Chat phase describes current state of the session
-typedef SWIFT_ENUM(NSInteger, ChatPhase, open) {
-/// Initialisation phase.
-/// Chat hasn’t started yet
-  ChatPhaseInitialising = 0,
-  ChatPhaseConfiguring = 1,
-/// Chat is ready to send & receive messages
-  ChatPhaseActive = 2,
-/// Chat is ending
-  ChatPhaseEnding = 3,
-/// Chat session has ended
-  ChatPhaseEnded = 4,
-};
-
 @class ZDKChatState;
-@class ZDKObservationToken;
 
 /// The <code>ZDKChatProvider</code> provides APIs to interact and observe the current Chat session.
 /// It provides APIs to:
@@ -4051,13 +4126,16 @@ typedef SWIFT_ENUM(NSInteger, ChatPhase, open) {
 /// </ul>
 SWIFT_CLASS_NAMED("ChatProvider")
 @interface ZDKChatProvider : NSObject
+/// Current chat state. Defaults to <code>ChatState.initial</code>.
+/// In order to observe updates of <code>ChatState</code>, please use the <code>observeChatState</code> function.
+@property (nonatomic, readonly, strong) ZDKChatState * _Nonnull chatState;
 /// Proactively lets an agent know that the user wants to chat.
 - (void)requestChat;
 /// Let’s the agent know when the visitor is typing.
 /// If <code>true</code>, the visitor typing indicator will appear in agent dashboard, else it will be hidden.
 /// \param isTyping isTyping
 ///
-- (void)setTypingWithIsTyping:(BOOL)isTyping;
+- (void)sendTypingWithIsTyping:(BOOL)isTyping;
 /// Observe changes of the current chat’s state
 /// The conversation thread can be accessed through the <code>logs</code>
 /// \param completion block that executes everytime there is an update to the <code>ChatState</code>
@@ -4066,13 +4144,6 @@ SWIFT_CLASS_NAMED("ChatProvider")
 /// returns:
 /// An <code>ObservationToken</code> that can cancel the subscription  to the <code>ChatState</code>.
 - (ZDKObservationToken * _Nonnull)observeChatState:(void (^ _Nonnull)(ZDKChatState * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
-/// Observe account updates
-/// \param completion block that executes everytime there is an update to the list of <code>Account</code>
-///
-///
-/// returns:
-/// An <code>ObservationToken</code>
-- (ZDKObservationToken * _Nonnull)observeAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nonnull))completion SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -4089,7 +4160,7 @@ enum ZDKRating : NSInteger;
 - (void)resendFailedFileWithId:(NSString * _Nonnull)id onProgress:(void (^ _Nullable)(double))onProgress completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendChatRating:(enum ZDKRating)rating completion:(void (^ _Nullable)(enum ZDKRating, NSError * _Nullable))completion;
 - (void)sendChatComment:(NSString * _Nonnull)comment completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
-- (void)getAccount:(void (^ _Nonnull)(ZDKChatAccount * _Nullable, NSError * _Nullable))completion;
+- (void)sendEmailTranscript:(NSString * _Nonnull)email completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)endChat:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
 @end
 
@@ -4131,6 +4202,20 @@ SWIFT_CLASS_NAMED("ChatRatingRequest")
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
 
+/// Chat session status describes current state of the session
+typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
+/// Initialization status.
+/// Chat hasn’t started yet
+  ChatSessionStatusInitializing = 0,
+  ChatSessionStatusConfiguring = 1,
+/// Chat is ready to send & receive messages
+  ChatSessionStatusStarted = 2,
+/// Chat is ending
+  ChatSessionStatusEnding = 3,
+/// Chat session has ended
+  ChatSessionStatusEnded = 4,
+};
+
 
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
@@ -4155,7 +4240,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSetti
 
 /// <code>ZDKChatState</code> is a model representation of the current chat session.
 /// Can gather information about the <code>agents</code> in the session, the visitor’s <code>queuePosition</code>,
-/// what <code>phase</code> the chat is in, and the list of <code>logs</code> in the session
+/// what <code>status</code> the chat is in, and the list of <code>logs</code> in the session
 SWIFT_CLASS_NAMED("ChatState")
 @interface ZDKChatState : NSObject
 /// Empty chat state
@@ -4169,14 +4254,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 @property (nonatomic, readonly, copy) NSArray<ZDKAgent *> * _Nonnull agents;
 /// Whether the chat session is active. If <code>false</code> then the chat has ended.
 @property (nonatomic, readonly) BOOL isChatting;
+/// Chat session id
+@property (nonatomic, readonly, copy) NSString * _Nullable chatId;
 /// Selected department
 @property (nonatomic, readonly, strong) ZDKDepartment * _Nullable department;
 /// Array of ChatLogs that have occured in the chat. eg. Member join/leave, attachments
 @property (nonatomic, readonly, copy) NSArray<ZDKChatLog *> * _Nonnull logs;
 /// Queue position
 @property (nonatomic, strong) ZDKQueuePosition * _Nonnull queuePosition;
-/// The phase of the current chat session.
-@property (nonatomic, readonly) enum ChatPhase chatPhase;
+/// The status of the current chat session.
+@property (nonatomic, readonly) enum ChatSessionStatus chatSessionStatus;
 /// Returns log with given message id
 /// \param id message id
 ///
@@ -4187,7 +4274,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 
 
 @interface ZDKChatState (SWIFT_EXTENSION(ChatProvidersSDK))
-- (nonnull instancetype)initWithAgents:(NSArray<ZDKAgent *> * _Nonnull)agents isChatting:(BOOL)isChatting department:(ZDKDepartment * _Nullable)department logs:(NSArray<ZDKChatLog *> * _Nonnull)logs queue:(NSInteger)queue comment:(NSString * _Nonnull)comment rating:(enum ZDKRating)rating;
+- (nonnull instancetype)initWithAgents:(NSArray<ZDKAgent *> * _Nonnull)agents isChatting:(BOOL)isChatting chatId:(NSString * _Nullable)chatId department:(ZDKDepartment * _Nullable)department logs:(NSArray<ZDKChatLog *> * _Nonnull)logs queue:(NSInteger)queue comment:(NSString * _Nonnull)comment rating:(enum ZDKRating)rating;
 @end
 
 
@@ -4198,42 +4285,44 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
-enum ZDKConnectionState : NSInteger;
+enum ZDKConnectionStatus : NSInteger;
 
 /// <code>ZDKConnectionProvider</code> gives the ability to observe connection updates.
 SWIFT_CLASS_NAMED("ConnectionProvider")
 @interface ZDKConnectionProvider : NSObject
-/// The current state of the Connection
-@property (nonatomic, readonly) enum ZDKConnectionState state;
+/// The current status of the Connection
+@property (nonatomic, readonly) enum ZDKConnectionStatus status;
 /// Connect to the session
 - (void)connect;
 /// Disconnect from the current session, closes the socket connection.
 /// Please note, this won’t end the chat session with agent
 - (void)disconnect;
-/// Observe connection state updates. Specify a closure how the state should be handled
-/// \param completion Specify how to handle the <code>ConnectionState</code> via closure.
+/// Observe connection status updates. Specify a closure how the status should be handled
+/// \param completion Specify how to handle the <code>ConnectionStatus</code> via closure.
 ///
 ///
 /// returns:
-/// An <code>ObservationToken</code> that can cancel the subscription to the <code>ConnectionState</code>.
-- (ZDKObservationToken * _Nonnull)observeConnectionState:(void (^ _Nonnull)(enum ZDKConnectionState))completion SWIFT_WARN_UNUSED_RESULT;
+/// An <code>ObservationToken</code> that can cancel the subscription to the <code>ConnectionStatus</code>.
+- (ZDKObservationToken * _Nonnull)observeConnectionStatus:(void (^ _Nonnull)(enum ZDKConnectionStatus))completion SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 /// Represents different states of the<code>ChatSession</code>
-typedef SWIFT_ENUM_NAMED(NSInteger, ZDKConnectionState, "ConnectionState", closed) {
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKConnectionStatus, "ConnectionStatus", open) {
 /// Indicating the client is trying to connect to the backend.
-  ZDKConnectionStateConnecting = 0,
+  ZDKConnectionStatusConnecting = 0,
 /// The <code>ChatSession</code> has connected to the backend and is ready to send/receive messages.
-  ZDKConnectionStateConnected = 1,
+  ZDKConnectionStatusConnected = 1,
 /// The <code>ChatSession</code> has disconnected. Can be caused by network connection, or a user ending
 /// the session with <code>ChatSession.disconnect()</code>
-  ZDKConnectionStateDisconnected = 2,
+  ZDKConnectionStatusDisconnected = 2,
 /// The <code>ChatSession</code> is trying to reconnect to a chat that was already in session.
-  ZDKConnectionStateReconnecting = 3,
+  ZDKConnectionStatusReconnecting = 3,
 /// Failed to reconnect to the web-socket
-  ZDKConnectionStateFailed = 4,
+  ZDKConnectionStatusFailed = 4,
+/// The internet connectivity appears to be offline
+  ZDKConnectionStatusUnreachable = 5,
 };
 
 enum ZDKDepartmentStatus : NSInteger;
@@ -4263,6 +4352,8 @@ SWIFT_CLASS_NAMED("Department")
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 @end
+
+
 
 
 
@@ -4312,6 +4403,8 @@ SWIFT_CLASS_NAMED("OfflineForm")
 /// Such as name, email, phone number, tags, and notes related to the visitor and their session.
 SWIFT_CLASS_NAMED("ProfileProvider")
 @interface ZDKProfileProvider : NSObject
+/// Current <code>VisitorInfo</code> model. Defaults to <code>VisitorInfo.initial</code>.
+@property (nonatomic, readonly, strong) ZDKVisitorInfo * _Nonnull visitorInfo;
 /// Observe changes of the current <code>VisitorInfo</code>
 /// \param completion block that executes everytime there is an update to the <code>VisitorInfo</code>
 ///
@@ -4339,6 +4432,7 @@ SWIFT_CLASS_NAMED("ProfileProvider")
 /// handle session updates, handle connection state, and interact with the APIs in other ways.
 SWIFT_CLASS_NAMED("Providers")
 @interface ZDKChatProviders : NSObject
+@property (nonatomic, readonly, strong) ZDKChatAccountProvider * _Nonnull accountProvider;
 @property (nonatomic, readonly, strong) ZDKConnectionProvider * _Nonnull connectionProvider;
 @property (nonatomic, readonly, strong) ZDKProfileProvider * _Nonnull profileProvider;
 @property (nonatomic, readonly, strong) ZDKPushNotificationsProvider * _Nonnull pushNotificationsProvider;
@@ -4425,6 +4519,8 @@ SWIFT_CLASS_NAMED("QueuePosition")
 /// <code>ZDKSettingsProvider</code> gives the ability to observe settings updates.
 SWIFT_CLASS_NAMED("SettingsProvider")
 @interface ZDKSettingsProvider : NSObject
+/// Current <code>Settings</code> model. Defaults to <code>ChatSettings.initial</code>.
+@property (nonatomic, readonly, strong) ZDKChatSettings * _Nonnull settings;
 /// Observe chat settings model
 /// \param completion Specify how to handle the <code>ChatSettings</code> via closure.
 ///
@@ -4479,16 +4575,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKVisitorIn
 /// If <code>url</code> parameter of <code>VisitorPath</code> is not specified, an <code>ISO8601</code> timestamp will be sent.
 SWIFT_CLASS_NAMED("VisitorPath")
 @interface ZDKVisitorPath : NSObject
-/// Custom event
-@property (nonatomic, readonly, copy) NSString * _Nonnull event;
+/// Custom title
+@property (nonatomic, readonly, copy) NSString * _Nonnull title;
 /// Optional url string. <code>ISO8601</code> timestamp by default.
 @property (nonatomic, readonly, copy) NSString * _Nonnull url;
 /// Initializer for <code>VisitorPath</code> updates
-/// \param event The user-event
+/// \param title The title for user-event
 ///
 /// \param url Another string associated with the event.
 ///
-- (nonnull instancetype)initWithEvent:(NSString * _Nonnull)event url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithTitle:(NSString * _Nonnull)title url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
