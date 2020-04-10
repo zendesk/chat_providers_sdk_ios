@@ -201,6 +201,13 @@ extension Log {
   public func w(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
   public func e(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
 }
+extension Log {
+  public func debugI(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+  public func debugV(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+  public func debugD(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+  public func debugW(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+  public func debugE(file: Swift.StaticString = #file, line: Swift.Int = #line, function: Swift.StaticString = #function, error: Swift.Error? = nil, _ msg: Swift.String, _ args: Swift.CVarArg...)
+}
 public protocol LoggerFactory {
   func getLoggerFor(namespace: Swift.String, andClass clazz: Any) -> ChatProvidersSDK.Log
   func setDefault(level: ChatProvidersSDK.LogLevel)
@@ -421,6 +428,14 @@ extension ChatLog {
   @available(swift, obsoleted: 1.0)
   @objc dynamic public var deliveryStatus: ChatProvidersSDK.ZDKDeliveryStatus {
     @objc get
+  }
+}
+extension Error {
+  public var legibleDescription: Swift.String {
+    get
+  }
+  public var legibleLocalizedDescription: Swift.String {
+    get
   }
 }
 @objc(ZDKChatComment) final public class ChatComment : ChatProvidersSDK.ChatLog {
