@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ZendeskChatProvidersSDK"
-  s.version      = "2.5.1"
+  s.version      = "2.6.0"
   s.summary      = "ZendeskChatProvidersSDK #{s.version.to_s}"
   s.homepage     = "https://developer.zendesk.com/embeddables"
   s.license      = {

@@ -668,6 +668,29 @@ extension OfflineForm {
   @objc deinit
   final public func encode(to encoder: Swift.Encoder) throws
 }
+@_hasMissingDesignatedInitializers @objc(ZDKPushNotificationData) final public class PushNotificationData : ObjectiveC.NSObject {
+  @objc(ZDKPushNotificationType) public enum PushNotificationType : Swift.Int {
+    case chatEnded
+    case message
+    public var description: Swift.String {
+      get
+    }
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc final public let type: ChatProvidersSDK.PushNotificationData.PushNotificationType
+  @objc final public let userInfo: [Swift.AnyHashable : Any]
+  @objc public static func data(for userInfo: [Swift.AnyHashable : Any]) -> ChatProvidersSDK.PushNotificationData?
+  @objc public static func isChatPushNotification(userInfo: [Swift.AnyHashable : Any]) -> Swift.Bool
+  @objc deinit
+  @objc override dynamic public init()
+}
+extension PushNotificationData {
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+}
 @_hasMissingDesignatedInitializers @objc(ZDKChatMessage) final public class ChatMessage : ChatProvidersSDK.ChatLog {
   @objc final public let message: Swift.String
   @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
@@ -856,6 +879,9 @@ extension ChatProvidersSDK.VisitorInfo : Swift.Encodable {}
 extension ChatProvidersSDK.VisitorInfo : Swift.Decodable {}
 extension ChatProvidersSDK.Agent : Swift.Encodable {}
 extension ChatProvidersSDK.Agent : Swift.Decodable {}
+extension ChatProvidersSDK.PushNotificationData.PushNotificationType : Swift.Equatable {}
+extension ChatProvidersSDK.PushNotificationData.PushNotificationType : Swift.Hashable {}
+extension ChatProvidersSDK.PushNotificationData.PushNotificationType : Swift.RawRepresentable {}
 extension ChatProvidersSDK.ZDKDeliveryStatus : Swift.RawRepresentable {}
 extension ChatProvidersSDK.Rating : Swift.Equatable {}
 extension ChatProvidersSDK.Rating : Swift.Hashable {}

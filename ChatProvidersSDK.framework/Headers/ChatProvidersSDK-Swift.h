@@ -1015,6 +1015,44 @@ SWIFT_CLASS_NAMED("Providers")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+enum ZDKPushNotificationType : NSInteger;
+
+SWIFT_CLASS_NAMED("PushNotificationData")
+@interface ZDKPushNotificationData : NSObject
+/// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
+@property (nonatomic, readonly) enum ZDKPushNotificationType type;
+/// raw payload from received remote push notification
+@property (nonatomic, readonly, copy) NSDictionary * _Nonnull userInfo;
+/// Instantiates the Data object from given push notification payload
+/// \param userInfo Push notification payload
+///
+///
+/// returns:
+/// type-safe push notification object
++ (ZDKPushNotificationData * _Nullable)dataFor:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+/// Returns true if the push notification payload belongs to <code>Chat</code>
+/// \param userInfo Push notification payload
+///
++ (BOOL)isChatPushNotificationWithUserInfo:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
+/// Chat has ended
+  ZDKPushNotificationTypeChatEnded = 0,
+/// New message received
+  ZDKPushNotificationTypeMessage = 1,
+};
+
+
+@interface ZDKPushNotificationData (SWIFT_EXTENSION(ChatProvidersSDK))
+/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
+/// \param object the object to compare against
+///
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
 
 /// The <code>ZDKPushNoticiationProvider</code> provides APIs to subscribe to, and handle Zendesk Chat’s Push Notifications.
 /// There are two types of chat notifications:
@@ -2201,6 +2239,44 @@ SWIFT_CLASS_NAMED("Providers")
 @property (nonatomic, readonly, strong) ZDKSettingsProvider * _Nonnull settingsProvider;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+enum ZDKPushNotificationType : NSInteger;
+
+SWIFT_CLASS_NAMED("PushNotificationData")
+@interface ZDKPushNotificationData : NSObject
+/// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
+@property (nonatomic, readonly) enum ZDKPushNotificationType type;
+/// raw payload from received remote push notification
+@property (nonatomic, readonly, copy) NSDictionary * _Nonnull userInfo;
+/// Instantiates the Data object from given push notification payload
+/// \param userInfo Push notification payload
+///
+///
+/// returns:
+/// type-safe push notification object
++ (ZDKPushNotificationData * _Nullable)dataFor:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+/// Returns true if the push notification payload belongs to <code>Chat</code>
+/// \param userInfo Push notification payload
+///
++ (BOOL)isChatPushNotificationWithUserInfo:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
+/// Chat has ended
+  ZDKPushNotificationTypeChatEnded = 0,
+/// New message received
+  ZDKPushNotificationTypeMessage = 1,
+};
+
+
+@interface ZDKPushNotificationData (SWIFT_EXTENSION(ChatProvidersSDK))
+/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
+/// \param object the object to compare against
+///
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -3394,6 +3470,44 @@ SWIFT_CLASS_NAMED("Providers")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+enum ZDKPushNotificationType : NSInteger;
+
+SWIFT_CLASS_NAMED("PushNotificationData")
+@interface ZDKPushNotificationData : NSObject
+/// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
+@property (nonatomic, readonly) enum ZDKPushNotificationType type;
+/// raw payload from received remote push notification
+@property (nonatomic, readonly, copy) NSDictionary * _Nonnull userInfo;
+/// Instantiates the Data object from given push notification payload
+/// \param userInfo Push notification payload
+///
+///
+/// returns:
+/// type-safe push notification object
++ (ZDKPushNotificationData * _Nullable)dataFor:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+/// Returns true if the push notification payload belongs to <code>Chat</code>
+/// \param userInfo Push notification payload
+///
++ (BOOL)isChatPushNotificationWithUserInfo:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
+/// Chat has ended
+  ZDKPushNotificationTypeChatEnded = 0,
+/// New message received
+  ZDKPushNotificationTypeMessage = 1,
+};
+
+
+@interface ZDKPushNotificationData (SWIFT_EXTENSION(ChatProvidersSDK))
+/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
+/// \param object the object to compare against
+///
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
 
 /// The <code>ZDKPushNoticiationProvider</code> provides APIs to subscribe to, and handle Zendesk Chat’s Push Notifications.
 /// There are two types of chat notifications:
@@ -4580,6 +4694,44 @@ SWIFT_CLASS_NAMED("Providers")
 @property (nonatomic, readonly, strong) ZDKSettingsProvider * _Nonnull settingsProvider;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+enum ZDKPushNotificationType : NSInteger;
+
+SWIFT_CLASS_NAMED("PushNotificationData")
+@interface ZDKPushNotificationData : NSObject
+/// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
+@property (nonatomic, readonly) enum ZDKPushNotificationType type;
+/// raw payload from received remote push notification
+@property (nonatomic, readonly, copy) NSDictionary * _Nonnull userInfo;
+/// Instantiates the Data object from given push notification payload
+/// \param userInfo Push notification payload
+///
+///
+/// returns:
+/// type-safe push notification object
++ (ZDKPushNotificationData * _Nullable)dataFor:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+/// Returns true if the push notification payload belongs to <code>Chat</code>
+/// \param userInfo Push notification payload
+///
++ (BOOL)isChatPushNotificationWithUserInfo:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
+/// Chat has ended
+  ZDKPushNotificationTypeChatEnded = 0,
+/// New message received
+  ZDKPushNotificationTypeMessage = 1,
+};
+
+
+@interface ZDKPushNotificationData (SWIFT_EXTENSION(ChatProvidersSDK))
+/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
+/// \param object the object to compare against
+///
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
