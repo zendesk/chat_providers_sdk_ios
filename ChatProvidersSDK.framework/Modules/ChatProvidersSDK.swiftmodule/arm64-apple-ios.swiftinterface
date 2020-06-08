@@ -6,7 +6,6 @@ import CommonCrypto
 import Foundation
 import Swift
 import SystemConfiguration
-import UIKit
 import os
 @objc(ZDKConnectionStatus) public enum ConnectionStatus : Swift.Int, Swift.CustomStringConvertible {
   case connecting
@@ -107,6 +106,12 @@ extension Date {
   }
   @objc convenience public init(name: Swift.String, mimeType: Swift.String, size: Swift.Int, url: Swift.String, localURL: Foundation.URL?)
   @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
   @objc deinit
   @objc override dynamic public init()
   public init(from decoder: Swift.Decoder) throws
@@ -248,12 +253,21 @@ extension DebugLogger : ChatProvidersSDK.Log {
   @objc public init(accountStatus: ChatProvidersSDK.AccountStatus, departments: [ChatProvidersSDK.Department]?)
   @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
   @objc final public func containsDepartment(with name: Swift.String) -> Swift.Bool
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
   @objc override dynamic public init()
   @objc deinit
 }
 @objc(ZDKChatAccountStatus) public enum AccountStatus : Swift.Int {
   case online
   case offline
+  public var description: Swift.String {
+    get
+  }
   public typealias RawValue = Swift.Int
   public init?(rawValue: Swift.Int)
   public var rawValue: Swift.Int {
@@ -318,6 +332,12 @@ public protocol ChatForm {
   }
   public init(agents: [ChatProvidersSDK.Agent], isChatting: Swift.Bool, chatId: Swift.String?, department: ChatProvidersSDK.Department?, logs: [ChatProvidersSDK.ChatLog], queue: Swift.Int, comment: Swift.String, rating: ChatProvidersSDK.Rating)
   @objc final public func log(withId id: Swift.String) -> ChatProvidersSDK.ChatLog?
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
   @objc override dynamic public init()
   @objc deinit
 }
@@ -363,6 +383,12 @@ public enum ChatAttachmentError : Swift.String, Foundation.LocalizedError, Found
   @objc final public let supportedFileTypes: [Swift.String]
   @objc public init(fileSizeLimit: Swift.Int64, isFileSendingEnabled: Swift.Bool, supportedFileTypes: [Swift.String])
   @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
   @objc override dynamic public init()
   public init(from decoder: Swift.Decoder) throws
   @objc deinit
@@ -383,14 +409,15 @@ public enum ChatAttachmentError : Swift.String, Foundation.LocalizedError, Found
   case attachmentMessage
   case memberJoin
   case memberLeave
+  case optionsMessage
   case chatComment
   case chatRating
   case chatRatingRequest
   public typealias RawValue = Swift.Int
-  public init?(rawValue: Swift.Int)
   public var rawValue: Swift.Int {
     get
   }
+  public init?(rawValue: Swift.Int)
 }
 public protocol ChatLogProtocol : Swift.CustomStringConvertible, Swift.Hashable {
   var id: Swift.String { get }
@@ -449,6 +476,12 @@ extension ChatComment {
   @objc final public let title: Swift.String
   @objc final public let url: Swift.String
   @objc public init(title: Swift.String, url: Swift.String = Date().iso8601)
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
   @objc deinit
   @objc override dynamic public init()
   public init(from decoder: Swift.Decoder) throws
@@ -475,17 +508,17 @@ extension Date {
     get
   }
 }
-@objc public enum ChatSessionStatus : Swift.Int {
+@objc public enum ChatSessionStatus : Swift.Int, Swift.CustomStringConvertible {
   case initializing
   case configuring
   case started
   case ending
   case ended
   public typealias RawValue = Swift.Int
-  public init?(rawValue: Swift.Int)
   public var rawValue: Swift.Int {
     get
   }
+  public init?(rawValue: Swift.Int)
 }
 extension ChatSessionStatus {
   public var description: Swift.String {
@@ -536,6 +569,12 @@ extension ChatRating {
   @objc final public let phoneNumber: Swift.String
   @objc public init(name: Swift.String = "", email: Swift.String = "", phoneNumber: Swift.String = "")
   @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
   @objc override dynamic public init()
   public init(from decoder: Swift.Decoder) throws
   @objc deinit
@@ -545,6 +584,7 @@ extension ChatRating {
   @objc public static let NotificationMessageReceived: Foundation.NSNotification.Name
   @objc public static let NotificationChatEnded: Foundation.NSNotification.Name
   @objc final public let accountKey: Swift.String
+  @objc final public let appId: Swift.String?
   @objc final public var providers: ChatProvidersSDK.Providers {
     get
   }
@@ -591,6 +631,8 @@ extension ChatRating {
   @objc final public var settingsProvider: ChatProvidersSDK.SettingsProvider {
     @objc get
   }
+  @objc final public class func initialize(accountKey: Swift.String, appId: Swift.String? = nil, queue: Dispatch.DispatchQueue = .main)
+  @available(swift, obsoleted: 1.0)
   @objc final public class func initialize(accountKey: Swift.String, queue: Dispatch.DispatchQueue = .main)
   @objc final public func clearCache()
   @objc final public func resetIdentity()
@@ -663,6 +705,12 @@ extension OfflineForm {
   }
   @objc public init(avatar: Foundation.URL?, nick: Swift.String, displayName: Swift.String, isTyping: Swift.Bool)
   @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
   @objc override dynamic public init()
   public init(from decoder: Swift.Decoder) throws
   @objc deinit
@@ -690,6 +738,20 @@ extension OfflineForm {
 }
 extension PushNotificationData {
   @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+}
+@_hasMissingDesignatedInitializers @objc(ZDKChatOptionsMessage) final public class ChatOptionsMessage : ChatProvidersSDK.ChatLog {
+  @objc final public let message: Swift.String
+  @objc final public let options: [Swift.String]
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+extension ChatOptionsMessage {
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc override final public var debugDescription: Swift.String {
+    @objc get
+  }
 }
 @_hasMissingDesignatedInitializers @objc(ZDKChatMessage) final public class ChatMessage : ChatProvidersSDK.ChatLog {
   @objc final public let message: Swift.String

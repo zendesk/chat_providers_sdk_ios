@@ -226,6 +226,8 @@ SWIFT_CLASS_NAMED("Account")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 /// Returns TRUE if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -275,6 +277,8 @@ SWIFT_CLASS_NAMED("Agent")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -306,6 +310,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 + (NSNotificationName _Nonnull)NotificationChatEnded SWIFT_WARN_UNUSED_RESULT;
 /// Account key
 @property (nonatomic, readonly, copy) NSString * _Nonnull accountKey;
+/// App id
+@property (nonatomic, readonly, copy) NSString * _Nullable appId;
 /// Grouping of Zendesk Chat’s providers
 @property (nonatomic, readonly, strong) ZDKChatProviders * _Nonnull providers;
 /// Static instance of the Chat provider
@@ -344,6 +350,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 @property (nonatomic, readonly, strong) ZDKChatProvider * _Nonnull chatProvider;
 /// Settings Provider
 @property (nonatomic, readonly, strong) ZDKSettingsProvider * _Nonnull settingsProvider;
+/// Initializes chat with Chat’s accountkey
+/// \param accountKey The accountKey from your chat instance
+///
+/// \param appId The app id
+///
+/// \param queue the queue to dispatch chat operations on. Default is <code>.main</code>
+///
++ (void)initializeWithAccountKey:(NSString * _Nonnull)accountKey appId:(NSString * _Nullable)appId queue:(dispatch_queue_t _Nonnull)queue;
 /// Initializes chat with Chat’s accountkey
 /// \param accountKey The accountKey from your chat instance
 ///
@@ -462,6 +476,8 @@ SWIFT_CLASS_NAMED("ChatAttachment")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -511,7 +527,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 @property (nonatomic, readonly, copy) NSString * _Nonnull message;
 /// Underlying attachment model
 @property (nonatomic, readonly, strong) ZDKChatAttachment * _Nonnull attachment;
-/// Returns the <code>URL</code> associated with the attachment. Preferring local over remote. Nil if neither exist.
+/// Returns the <code>URL</code> associated with the attachment. Preferring remote over local. Nil if neither exist.
 @property (nonatomic, readonly, copy) NSURL * _Nullable url;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
@@ -577,12 +593,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
   ZDKChatLogTypeMemberJoin = 2,
 /// Member left the channel
   ZDKChatLogTypeMemberLeave = 3,
+/// Multiple-choice option message
+  ZDKChatLogTypeOptionsMessage = 4,
 /// Visitor left a comment about the chat
-  ZDKChatLogTypeChatComment = 4,
+  ZDKChatLogTypeChatComment = 5,
 /// Visitor left a rating
-  ZDKChatLogTypeChatRating = 5,
+  ZDKChatLogTypeChatRating = 6,
 /// Agent requested a rating
-  ZDKChatLogTypeChatRatingRequest = 6,
+  ZDKChatLogTypeChatRatingRequest = 7,
 };
 
 
@@ -631,6 +649,29 @@ SWIFT_CLASS_NAMED("ChatMessage")
 
 
 @interface ZDKChatMessage (SWIFT_EXTENSION(ChatProvidersSDK))
+/// A textual representation of this instance.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
+@end
+
+
+/// Questions from agent with multiple options that a user can respond with
+SWIFT_CLASS_NAMED("ChatOptionsMessage")
+@interface ZDKChatOptionsMessage : ZDKChatLog
+/// Message from sender
+@property (nonatomic, readonly, copy) NSString * _Nonnull message;
+/// List of possible messages to reply with
+@property (nonatomic, readonly, copy) NSArray<NSString *> * _Nonnull options;
+/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
+/// \param object the object to compare against
+///
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+
+
+@interface ZDKChatOptionsMessage (SWIFT_EXTENSION(ChatProvidersSDK))
 /// A textual representation of this instance.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -777,6 +818,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSetti
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -813,6 +856,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 /// \param id message id
 ///
 - (ZDKChatLog * _Nullable)logWithId:(NSString * _Nonnull)id SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1081,6 +1126,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 
 @interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
+/// Registers device token with Zendesk Chat
+/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+///
+- (void)registerPushToken:(NSData * _Nonnull)pushToken;
+@end
+
+
+@interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 /// Received push notification is processed by Chat SDK.
 /// There are two types of chat notifications:
 /// <ul>
@@ -1100,14 +1153,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 /// \param userInfo A dictionary that contains information related to the remote notification
 ///
 - (BOOL)isChatPushNotification:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
-/// Registers device token with Zendesk Chat
-/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
-///
-- (void)registerPushToken:(NSData * _Nonnull)pushToken;
 @end
 
 
@@ -1171,6 +1216,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKVisitorIn
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1196,6 +1243,8 @@ SWIFT_CLASS_NAMED("VisitorPath")
 /// \param url Another string associated with the event.
 ///
 - (nonnull instancetype)initWithTitle:(NSString * _Nonnull)title url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1452,6 +1501,8 @@ SWIFT_CLASS_NAMED("Account")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 /// Returns TRUE if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1501,6 +1552,8 @@ SWIFT_CLASS_NAMED("Agent")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1532,6 +1585,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 + (NSNotificationName _Nonnull)NotificationChatEnded SWIFT_WARN_UNUSED_RESULT;
 /// Account key
 @property (nonatomic, readonly, copy) NSString * _Nonnull accountKey;
+/// App id
+@property (nonatomic, readonly, copy) NSString * _Nullable appId;
 /// Grouping of Zendesk Chat’s providers
 @property (nonatomic, readonly, strong) ZDKChatProviders * _Nonnull providers;
 /// Static instance of the Chat provider
@@ -1570,6 +1625,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 @property (nonatomic, readonly, strong) ZDKChatProvider * _Nonnull chatProvider;
 /// Settings Provider
 @property (nonatomic, readonly, strong) ZDKSettingsProvider * _Nonnull settingsProvider;
+/// Initializes chat with Chat’s accountkey
+/// \param accountKey The accountKey from your chat instance
+///
+/// \param appId The app id
+///
+/// \param queue the queue to dispatch chat operations on. Default is <code>.main</code>
+///
++ (void)initializeWithAccountKey:(NSString * _Nonnull)accountKey appId:(NSString * _Nullable)appId queue:(dispatch_queue_t _Nonnull)queue;
 /// Initializes chat with Chat’s accountkey
 /// \param accountKey The accountKey from your chat instance
 ///
@@ -1688,6 +1751,8 @@ SWIFT_CLASS_NAMED("ChatAttachment")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1737,7 +1802,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 @property (nonatomic, readonly, copy) NSString * _Nonnull message;
 /// Underlying attachment model
 @property (nonatomic, readonly, strong) ZDKChatAttachment * _Nonnull attachment;
-/// Returns the <code>URL</code> associated with the attachment. Preferring local over remote. Nil if neither exist.
+/// Returns the <code>URL</code> associated with the attachment. Preferring remote over local. Nil if neither exist.
 @property (nonatomic, readonly, copy) NSURL * _Nullable url;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
@@ -1803,12 +1868,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
   ZDKChatLogTypeMemberJoin = 2,
 /// Member left the channel
   ZDKChatLogTypeMemberLeave = 3,
+/// Multiple-choice option message
+  ZDKChatLogTypeOptionsMessage = 4,
 /// Visitor left a comment about the chat
-  ZDKChatLogTypeChatComment = 4,
+  ZDKChatLogTypeChatComment = 5,
 /// Visitor left a rating
-  ZDKChatLogTypeChatRating = 5,
+  ZDKChatLogTypeChatRating = 6,
 /// Agent requested a rating
-  ZDKChatLogTypeChatRatingRequest = 6,
+  ZDKChatLogTypeChatRatingRequest = 7,
 };
 
 
@@ -1857,6 +1924,29 @@ SWIFT_CLASS_NAMED("ChatMessage")
 
 
 @interface ZDKChatMessage (SWIFT_EXTENSION(ChatProvidersSDK))
+/// A textual representation of this instance.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
+@end
+
+
+/// Questions from agent with multiple options that a user can respond with
+SWIFT_CLASS_NAMED("ChatOptionsMessage")
+@interface ZDKChatOptionsMessage : ZDKChatLog
+/// Message from sender
+@property (nonatomic, readonly, copy) NSString * _Nonnull message;
+/// List of possible messages to reply with
+@property (nonatomic, readonly, copy) NSArray<NSString *> * _Nonnull options;
+/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
+/// \param object the object to compare against
+///
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+
+
+@interface ZDKChatOptionsMessage (SWIFT_EXTENSION(ChatProvidersSDK))
 /// A textual representation of this instance.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -2003,6 +2093,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSetti
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2039,6 +2131,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 /// \param id message id
 ///
 - (ZDKChatLog * _Nullable)logWithId:(NSString * _Nonnull)id SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2307,6 +2401,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 
 @interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
+/// Registers device token with Zendesk Chat
+/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+///
+- (void)registerPushToken:(NSData * _Nonnull)pushToken;
+@end
+
+
+@interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 /// Received push notification is processed by Chat SDK.
 /// There are two types of chat notifications:
 /// <ul>
@@ -2326,14 +2428,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 /// \param userInfo A dictionary that contains information related to the remote notification
 ///
 - (BOOL)isChatPushNotification:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
-/// Registers device token with Zendesk Chat
-/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
-///
-- (void)registerPushToken:(NSData * _Nonnull)pushToken;
 @end
 
 
@@ -2397,6 +2491,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKVisitorIn
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2422,6 +2518,8 @@ SWIFT_CLASS_NAMED("VisitorPath")
 /// \param url Another string associated with the event.
 ///
 - (nonnull instancetype)initWithTitle:(NSString * _Nonnull)title url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2681,6 +2779,8 @@ SWIFT_CLASS_NAMED("Account")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 /// Returns TRUE if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2730,6 +2830,8 @@ SWIFT_CLASS_NAMED("Agent")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2761,6 +2863,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 + (NSNotificationName _Nonnull)NotificationChatEnded SWIFT_WARN_UNUSED_RESULT;
 /// Account key
 @property (nonatomic, readonly, copy) NSString * _Nonnull accountKey;
+/// App id
+@property (nonatomic, readonly, copy) NSString * _Nullable appId;
 /// Grouping of Zendesk Chat’s providers
 @property (nonatomic, readonly, strong) ZDKChatProviders * _Nonnull providers;
 /// Static instance of the Chat provider
@@ -2799,6 +2903,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 @property (nonatomic, readonly, strong) ZDKChatProvider * _Nonnull chatProvider;
 /// Settings Provider
 @property (nonatomic, readonly, strong) ZDKSettingsProvider * _Nonnull settingsProvider;
+/// Initializes chat with Chat’s accountkey
+/// \param accountKey The accountKey from your chat instance
+///
+/// \param appId The app id
+///
+/// \param queue the queue to dispatch chat operations on. Default is <code>.main</code>
+///
++ (void)initializeWithAccountKey:(NSString * _Nonnull)accountKey appId:(NSString * _Nullable)appId queue:(dispatch_queue_t _Nonnull)queue;
 /// Initializes chat with Chat’s accountkey
 /// \param accountKey The accountKey from your chat instance
 ///
@@ -2917,6 +3029,8 @@ SWIFT_CLASS_NAMED("ChatAttachment")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2966,7 +3080,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 @property (nonatomic, readonly, copy) NSString * _Nonnull message;
 /// Underlying attachment model
 @property (nonatomic, readonly, strong) ZDKChatAttachment * _Nonnull attachment;
-/// Returns the <code>URL</code> associated with the attachment. Preferring local over remote. Nil if neither exist.
+/// Returns the <code>URL</code> associated with the attachment. Preferring remote over local. Nil if neither exist.
 @property (nonatomic, readonly, copy) NSURL * _Nullable url;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
@@ -3032,12 +3146,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
   ZDKChatLogTypeMemberJoin = 2,
 /// Member left the channel
   ZDKChatLogTypeMemberLeave = 3,
+/// Multiple-choice option message
+  ZDKChatLogTypeOptionsMessage = 4,
 /// Visitor left a comment about the chat
-  ZDKChatLogTypeChatComment = 4,
+  ZDKChatLogTypeChatComment = 5,
 /// Visitor left a rating
-  ZDKChatLogTypeChatRating = 5,
+  ZDKChatLogTypeChatRating = 6,
 /// Agent requested a rating
-  ZDKChatLogTypeChatRatingRequest = 6,
+  ZDKChatLogTypeChatRatingRequest = 7,
 };
 
 
@@ -3086,6 +3202,29 @@ SWIFT_CLASS_NAMED("ChatMessage")
 
 
 @interface ZDKChatMessage (SWIFT_EXTENSION(ChatProvidersSDK))
+/// A textual representation of this instance.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
+@end
+
+
+/// Questions from agent with multiple options that a user can respond with
+SWIFT_CLASS_NAMED("ChatOptionsMessage")
+@interface ZDKChatOptionsMessage : ZDKChatLog
+/// Message from sender
+@property (nonatomic, readonly, copy) NSString * _Nonnull message;
+/// List of possible messages to reply with
+@property (nonatomic, readonly, copy) NSArray<NSString *> * _Nonnull options;
+/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
+/// \param object the object to compare against
+///
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+
+
+@interface ZDKChatOptionsMessage (SWIFT_EXTENSION(ChatProvidersSDK))
 /// A textual representation of this instance.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -3232,6 +3371,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSetti
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3268,6 +3409,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 /// \param id message id
 ///
 - (ZDKChatLog * _Nullable)logWithId:(NSString * _Nonnull)id SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3536,6 +3679,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 
 @interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
+/// Registers device token with Zendesk Chat
+/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+///
+- (void)registerPushToken:(NSData * _Nonnull)pushToken;
+@end
+
+
+@interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 /// Received push notification is processed by Chat SDK.
 /// There are two types of chat notifications:
 /// <ul>
@@ -3555,14 +3706,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 /// \param userInfo A dictionary that contains information related to the remote notification
 ///
 - (BOOL)isChatPushNotification:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
-/// Registers device token with Zendesk Chat
-/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
-///
-- (void)registerPushToken:(NSData * _Nonnull)pushToken;
 @end
 
 
@@ -3626,6 +3769,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKVisitorIn
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3651,6 +3796,8 @@ SWIFT_CLASS_NAMED("VisitorPath")
 /// \param url Another string associated with the event.
 ///
 - (nonnull instancetype)initWithTitle:(NSString * _Nonnull)title url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3907,6 +4054,8 @@ SWIFT_CLASS_NAMED("Account")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 /// Returns TRUE if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3956,6 +4105,8 @@ SWIFT_CLASS_NAMED("Agent")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3987,6 +4138,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 + (NSNotificationName _Nonnull)NotificationChatEnded SWIFT_WARN_UNUSED_RESULT;
 /// Account key
 @property (nonatomic, readonly, copy) NSString * _Nonnull accountKey;
+/// App id
+@property (nonatomic, readonly, copy) NSString * _Nullable appId;
 /// Grouping of Zendesk Chat’s providers
 @property (nonatomic, readonly, strong) ZDKChatProviders * _Nonnull providers;
 /// Static instance of the Chat provider
@@ -4025,6 +4178,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 @property (nonatomic, readonly, strong) ZDKChatProvider * _Nonnull chatProvider;
 /// Settings Provider
 @property (nonatomic, readonly, strong) ZDKSettingsProvider * _Nonnull settingsProvider;
+/// Initializes chat with Chat’s accountkey
+/// \param accountKey The accountKey from your chat instance
+///
+/// \param appId The app id
+///
+/// \param queue the queue to dispatch chat operations on. Default is <code>.main</code>
+///
++ (void)initializeWithAccountKey:(NSString * _Nonnull)accountKey appId:(NSString * _Nullable)appId queue:(dispatch_queue_t _Nonnull)queue;
 /// Initializes chat with Chat’s accountkey
 /// \param accountKey The accountKey from your chat instance
 ///
@@ -4143,6 +4304,8 @@ SWIFT_CLASS_NAMED("ChatAttachment")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -4192,7 +4355,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 @property (nonatomic, readonly, copy) NSString * _Nonnull message;
 /// Underlying attachment model
 @property (nonatomic, readonly, strong) ZDKChatAttachment * _Nonnull attachment;
-/// Returns the <code>URL</code> associated with the attachment. Preferring local over remote. Nil if neither exist.
+/// Returns the <code>URL</code> associated with the attachment. Preferring remote over local. Nil if neither exist.
 @property (nonatomic, readonly, copy) NSURL * _Nullable url;
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
 /// \param object the object to compare against
@@ -4258,12 +4421,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
   ZDKChatLogTypeMemberJoin = 2,
 /// Member left the channel
   ZDKChatLogTypeMemberLeave = 3,
+/// Multiple-choice option message
+  ZDKChatLogTypeOptionsMessage = 4,
 /// Visitor left a comment about the chat
-  ZDKChatLogTypeChatComment = 4,
+  ZDKChatLogTypeChatComment = 5,
 /// Visitor left a rating
-  ZDKChatLogTypeChatRating = 5,
+  ZDKChatLogTypeChatRating = 6,
 /// Agent requested a rating
-  ZDKChatLogTypeChatRatingRequest = 6,
+  ZDKChatLogTypeChatRatingRequest = 7,
 };
 
 
@@ -4312,6 +4477,29 @@ SWIFT_CLASS_NAMED("ChatMessage")
 
 
 @interface ZDKChatMessage (SWIFT_EXTENSION(ChatProvidersSDK))
+/// A textual representation of this instance.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
+@end
+
+
+/// Questions from agent with multiple options that a user can respond with
+SWIFT_CLASS_NAMED("ChatOptionsMessage")
+@interface ZDKChatOptionsMessage : ZDKChatLog
+/// Message from sender
+@property (nonatomic, readonly, copy) NSString * _Nonnull message;
+/// List of possible messages to reply with
+@property (nonatomic, readonly, copy) NSArray<NSString *> * _Nonnull options;
+/// Returns a Boolean value that indicates whether the receiver and a given object are equal.
+/// \param object the object to compare against
+///
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+
+
+@interface ZDKChatOptionsMessage (SWIFT_EXTENSION(ChatProvidersSDK))
 /// A textual representation of this instance.
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -4458,6 +4646,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSetti
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -4494,6 +4684,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatState
 /// \param id message id
 ///
 - (ZDKChatLog * _Nullable)logWithId:(NSString * _Nonnull)id SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -4762,6 +4954,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 
 @interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
+/// Registers device token with Zendesk Chat
+/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+///
+- (void)registerPushToken:(NSData * _Nonnull)pushToken;
+@end
+
+
+@interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 /// Received push notification is processed by Chat SDK.
 /// There are two types of chat notifications:
 /// <ul>
@@ -4781,14 +4981,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 /// \param userInfo A dictionary that contains information related to the remote notification
 ///
 - (BOOL)isChatPushNotification:(NSDictionary * _Nonnull)userInfo SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
-/// Registers device token with Zendesk Chat
-/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
-///
-- (void)registerPushToken:(NSData * _Nonnull)pushToken;
 @end
 
 
@@ -4852,6 +5044,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKVisitorIn
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -4877,6 +5071,8 @@ SWIFT_CLASS_NAMED("VisitorPath")
 /// \param url Another string associated with the event.
 ///
 - (nonnull instancetype)initWithTitle:(NSString * _Nonnull)title url:(NSString * _Nonnull)url OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
