@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ZendeskChatProvidersSDK"
-  s.version      = "2.7.0"
+  s.version      = "2.8.0"
   s.summary      = "ZendeskChatProvidersSDK #{s.version.to_s}"
   s.homepage     = "https://developer.zendesk.com/embeddables"
   s.license      = {
@@ -18,7 +18,8 @@ Pod::Spec.new do |s|
   s.author       = 'Zendesk'
   s.platform     = :ios, '10.0'
   s.requires_arc = true
-  s.swift_version = '5.2.2'
+  s.swift_version = '5.2.4'
   s.source       = { :git => "https://github.com/zendesk/chat_providers_sdk_ios.git", :tag => s.version }
   s.vendored_frameworks = 'ChatProvidersSDK.framework'
+  s.preserve_paths = 'ChatProvidersSDK.framework', 'ChatProvidersSDK.framework.dSYM'
 end
