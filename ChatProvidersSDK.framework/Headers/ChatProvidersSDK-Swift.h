@@ -410,6 +410,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 /// \param pushTokenData device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration
 ///
 + (void)registerPushToken:(NSData * _Nonnull)pushTokenData;
+/// Sends push token to server
+/// \param pushTokenString device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration
+///
++ (void)registerPushTokenString:(NSString * _Nonnull)pushTokenString;
 /// Pass the received remote notification to <code>didReceiveRemoteNotification</code>.
 /// If the push notification belongs to Zendesk Chat, the push notification will be processed accordingly
 /// There are currently two types of supported Push Notifications:
@@ -1216,9 +1220,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 @interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 /// Registers device token with Zendesk Chat
-/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+/// \param pushTokenData device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
 ///
-- (void)registerPushToken:(NSData * _Nonnull)pushToken;
+- (void)registerPushToken:(NSData * _Nonnull)pushTokenData;
+/// Registers device token with Zendesk Chat
+/// \param pushTokenString device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+///
+- (void)registerPushTokenString:(NSString * _Nonnull)pushTokenString;
 @end
 
 
@@ -1329,6 +1337,7 @@ typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", open) {
   ZDKDepartmentStatusOffline = 0,
   ZDKDepartmentStatusOnline = 1,
+  ZDKDepartmentStatusAway = 2,
 };
 
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {
@@ -1751,6 +1760,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 /// \param pushTokenData device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration
 ///
 + (void)registerPushToken:(NSData * _Nonnull)pushTokenData;
+/// Sends push token to server
+/// \param pushTokenString device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration
+///
++ (void)registerPushTokenString:(NSString * _Nonnull)pushTokenString;
 /// Pass the received remote notification to <code>didReceiveRemoteNotification</code>.
 /// If the push notification belongs to Zendesk Chat, the push notification will be processed accordingly
 /// There are currently two types of supported Push Notifications:
@@ -2557,9 +2570,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 @interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 /// Registers device token with Zendesk Chat
-/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+/// \param pushTokenData device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
 ///
-- (void)registerPushToken:(NSData * _Nonnull)pushToken;
+- (void)registerPushToken:(NSData * _Nonnull)pushTokenData;
+/// Registers device token with Zendesk Chat
+/// \param pushTokenString device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+///
+- (void)registerPushTokenString:(NSString * _Nonnull)pushTokenString;
 @end
 
 
@@ -2670,6 +2687,7 @@ typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", open) {
   ZDKDepartmentStatusOffline = 0,
   ZDKDepartmentStatusOnline = 1,
+  ZDKDepartmentStatusAway = 2,
 };
 
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {
@@ -3095,6 +3113,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 /// \param pushTokenData device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration
 ///
 + (void)registerPushToken:(NSData * _Nonnull)pushTokenData;
+/// Sends push token to server
+/// \param pushTokenString device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration
+///
++ (void)registerPushTokenString:(NSString * _Nonnull)pushTokenString;
 /// Pass the received remote notification to <code>didReceiveRemoteNotification</code>.
 /// If the push notification belongs to Zendesk Chat, the push notification will be processed accordingly
 /// There are currently two types of supported Push Notifications:
@@ -3901,9 +3923,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 @interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 /// Registers device token with Zendesk Chat
-/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+/// \param pushTokenData device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
 ///
-- (void)registerPushToken:(NSData * _Nonnull)pushToken;
+- (void)registerPushToken:(NSData * _Nonnull)pushTokenData;
+/// Registers device token with Zendesk Chat
+/// \param pushTokenString device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+///
+- (void)registerPushTokenString:(NSString * _Nonnull)pushTokenString;
 @end
 
 
@@ -4014,6 +4040,7 @@ typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", open) {
   ZDKDepartmentStatusOffline = 0,
   ZDKDepartmentStatusOnline = 1,
+  ZDKDepartmentStatusAway = 2,
 };
 
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {
@@ -4436,6 +4463,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKSettingsP
 /// \param pushTokenData device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration
 ///
 + (void)registerPushToken:(NSData * _Nonnull)pushTokenData;
+/// Sends push token to server
+/// \param pushTokenString device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration
+///
++ (void)registerPushTokenString:(NSString * _Nonnull)pushTokenString;
 /// Pass the received remote notification to <code>didReceiveRemoteNotification</code>.
 /// If the push notification belongs to Zendesk Chat, the push notification will be processed accordingly
 /// There are currently two types of supported Push Notifications:
@@ -5242,9 +5273,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 @interface ZDKPushNotificationsProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 /// Registers device token with Zendesk Chat
-/// \param pushToken device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+/// \param pushTokenData device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
 ///
-- (void)registerPushToken:(NSData * _Nonnull)pushToken;
+- (void)registerPushToken:(NSData * _Nonnull)pushTokenData;
+/// Registers device token with Zendesk Chat
+/// \param pushTokenString device token received in <code>didRegisterForRemoteNotificationsWithDeviceToken</code> after registration.
+///
+- (void)registerPushTokenString:(NSString * _Nonnull)pushTokenString;
 @end
 
 
@@ -5355,6 +5390,7 @@ typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", open) {
   ZDKDepartmentStatusOffline = 0,
   ZDKDepartmentStatusOnline = 1,
+  ZDKDepartmentStatusAway = 2,
 };
 
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {

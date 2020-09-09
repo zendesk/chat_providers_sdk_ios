@@ -148,6 +148,7 @@ extension ProfileProvider {
 public enum DepartmentStatus : Swift.String, Swift.Codable {
   case offline
   case online
+  case away
   public typealias RawValue = Swift.String
   public init?(rawValue: Swift.String)
   public var rawValue: Swift.String {
@@ -157,6 +158,7 @@ public enum DepartmentStatus : Swift.String, Swift.Codable {
 @objc(ZDKDepartmentStatus) public enum ZDKDepartmentStatus : Swift.Int {
   case offline
   case online
+  case away
   public typealias RawValue = Swift.Int
   public init?(rawValue: Swift.Int)
   public var rawValue: Swift.Int {
@@ -263,7 +265,7 @@ extension DebugLogger : ChatProvidersSDK.Log {
   @objc override dynamic public init()
   @objc deinit
 }
-@objc(ZDKChatAccountStatus) public enum AccountStatus : Swift.Int {
+@objc(ZDKChatAccountStatus) public enum AccountStatus : Swift.Int, Swift.CustomStringConvertible {
   case online
   case offline
   public var description: Swift.String {
@@ -285,7 +287,8 @@ extension PushNotificationsProvider {
   @objc final public func isChatPushNotification(_ userInfo: [Swift.AnyHashable : Any]) -> Swift.Bool
 }
 extension PushNotificationsProvider {
-  @objc final public func registerPushToken(_ pushToken: Foundation.Data)
+  @objc final public func registerPushToken(_ pushTokenData: Foundation.Data)
+  @objc final public func registerPushTokenString(_ pushTokenString: Swift.String)
 }
 extension PushNotificationsProvider {
   @objc final public func unregisterPushToken()
@@ -734,6 +737,7 @@ extension ChatRating {
 }
 extension Chat {
   @objc final public class func registerPushToken(_ pushTokenData: Foundation.Data)
+  @objc final public class func registerPushTokenString(_ pushTokenString: Swift.String)
   @objc final public class func didReceiveRemoteNotification(_ userInfo: [Swift.AnyHashable : Any], in application: UIKit.UIApplication)
 }
 @objc(ZDKChatInfo) final public class ChatInfo : ObjectiveC.NSObject {
