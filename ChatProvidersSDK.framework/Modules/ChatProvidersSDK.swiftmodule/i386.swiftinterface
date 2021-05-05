@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.3 (swiftlang-1200.0.29.2 clang-1200.0.30.1)
+// swift-compiler-version: Apple Swift version 5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)
 // swift-module-flags: -target i386-apple-ios10.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name ChatProvidersSDK
 @_exported import ChatProvidersSDK
 import CommonCrypto
@@ -91,9 +91,15 @@ extension Date {
   }
   @objc final public func connect()
   @objc final public func disconnect()
-  @objc final public func observeConnectionStatus(_ completion: @escaping (ChatProvidersSDK.ConnectionStatus) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  final public func observeConnectionStatus(identifier: ChatProvidersSDK.ObservableIdentifier = .uuid(), _ completion: @escaping (ChatProvidersSDK.ConnectionStatus) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
   @objc deinit
   @objc override dynamic public init()
+}
+@objc extension ConnectionProvider {
+  @objc @available(swift, obsoleted: 1.0)
+  final public func observeConnectionStatus(identifier: Swift.String, _ completion: @escaping (ChatProvidersSDK.ConnectionStatus) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @objc @available(swift, obsoleted: 1.0)
+  final public func observeConnectionStatus(_ completion: @escaping (ChatProvidersSDK.ConnectionStatus) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
 }
 @_hasMissingDesignatedInitializers @objc(ZDKChatAttachment) final public class ChatAttachment : ObjectiveC.NSObject {
   @objc final public let name: Swift.String
@@ -127,7 +133,7 @@ extension Date {
   final public func removeTags(_ tags: [Swift.String], completion: ((Swift.Result<[Swift.String], ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
   final public func appendNote(_ note: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
   final public func setNote(_ note: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
-  @objc final public func observeVisitorInfo(_ completion: @escaping (ChatProvidersSDK.VisitorInfo) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  final public func observeVisitorInfo(identifier: ChatProvidersSDK.ObservableIdentifier = .uuid(), _ completion: @escaping (ChatProvidersSDK.VisitorInfo) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
   @objc deinit
   @objc override dynamic public init()
 }
@@ -144,6 +150,10 @@ extension ProfileProvider {
   @objc final public func appendNote(_ note: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
   @available(swift, obsoleted: 1.0)
   @objc final public func setNote(_ note: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func observeVisitorInfo(_ completion: @escaping (ChatProvidersSDK.VisitorInfo) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @available(swift, obsoleted: 1.0)
+  @objc final public func observeVisitorInfo(identifier: Swift.String, _ completion: @escaping (ChatProvidersSDK.VisitorInfo) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
 }
 public enum DepartmentStatus : Swift.String, Swift.Codable {
   case offline
@@ -262,8 +272,8 @@ extension DebugLogger : ChatProvidersSDK.Log {
   @objc override final public var debugDescription: Swift.String {
     @objc get
   }
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 @objc(ZDKChatAccountStatus) public enum AccountStatus : Swift.Int, Swift.CustomStringConvertible {
   case online
@@ -296,31 +306,47 @@ extension PushNotificationsProvider {
 extension NSNotification.Name {
   public static let reachabilityChanged: Foundation.Notification.Name
 }
+public enum ObservableIdentifier : Swift.Hashable {
+  case uuid(_: Foundation.UUID = UUID())
+  case identifier(Swift.String)
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: ChatProvidersSDK.ObservableIdentifier, b: ChatProvidersSDK.ObservableIdentifier) -> Swift.Bool
+}
 public protocol Observable : AnyObject {
   associatedtype Observable
-  var onUpdate: ([Foundation.UUID : (Self.Observable) -> Swift.Void]) { get set }
-  func addObserver<T>(_ observer: T, eagerObserver: Self.Observable?, onRemove: ((Foundation.UUID) -> Swift.Void)?, _ closure: @escaping (T?, Foundation.UUID, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
+  var onUpdate: ([ChatProvidersSDK.ObservableIdentifier : (Self.Observable) -> Swift.Void]) { get set }
+  func addObserver<T>(_ observer: T, identifier: ChatProvidersSDK.ObservableIdentifier, eagerObserver: Self.Observable?, onRemove: ((ChatProvidersSDK.ObservableIdentifier) -> Swift.Void)?, _ closure: @escaping (T?, ChatProvidersSDK.ObservableIdentifier, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
   func notifyObservers(_ observable: Self.Observable)
 }
 extension Observable {
-  public func addObserver<T>(_ observer: T, eagerObserver: Self.Observable? = nil, onRemove: ((Foundation.UUID) -> Swift.Void)? = nil, _ closure: @escaping (T?, Foundation.UUID, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
+  public func addObserver<T>(_ observer: T, identifier: ChatProvidersSDK.ObservableIdentifier = .uuid(), eagerObserver: Self.Observable? = nil, onRemove: ((ChatProvidersSDK.ObservableIdentifier) -> Swift.Void)? = nil, _ closure: @escaping (T?, ChatProvidersSDK.ObservableIdentifier, Self.Observable) -> Swift.Void) -> ChatProvidersSDK.ObservationToken where T : AnyObject
   public func notifyObservers(_ observable: Self.Observable)
 }
-@objc(ZDKObservationToken) final public class ObservationToken : ObjectiveC.NSObject {
+@objc(ZDKObservationToken) final public class ObservationToken : ObjectiveC.NSObject, Swift.Identifiable {
+  final public let id: ChatProvidersSDK.ObservableIdentifier
   @objc deinit
-  public init(id: Foundation.UUID, cancellationClosure: @escaping () -> Swift.Void)
+  public init(id: ChatProvidersSDK.ObservableIdentifier, cancellationClosure: @escaping () -> Swift.Void)
   @objc final public func cancel()
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
   @objc override dynamic public init()
+  public typealias ID = ChatProvidersSDK.ObservableIdentifier
 }
 @_hasMissingDesignatedInitializers @objc(ZDKChatAccountProvider) final public class AccountProvider : ObjectiveC.NSObject {
   final public func getAccount(_ completion: @escaping (Swift.Result<ChatProvidersSDK.Account, Swift.Error>) -> Swift.Void)
-  @objc final public func observeAccount(_ completion: @escaping (ChatProvidersSDK.Account) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  final public func observeAccount(identifier: ChatProvidersSDK.ObservableIdentifier = .uuid(), _ completion: @escaping (ChatProvidersSDK.Account) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
   @objc deinit
   @objc override dynamic public init()
 }
-extension AccountProvider {
-  @available(swift, obsoleted: 1.0)
-  @objc final public func getAccount(_ completion: @escaping ((ChatProvidersSDK.Account?, Swift.Error?) -> Swift.Void))
+@objc extension AccountProvider {
+  @objc @available(swift, obsoleted: 1.0)
+  final public func getAccount(_ completion: @escaping ((ChatProvidersSDK.Account?, Swift.Error?) -> Swift.Void))
+  @objc @available(swift, obsoleted: 1.0)
+  final public func observeAccount(identifier: Swift.String, _ completion: @escaping (ChatProvidersSDK.Account) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @objc @available(swift, obsoleted: 1.0)
+  final public func observeAccount(_ completion: @escaping (ChatProvidersSDK.Account) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
 }
 public protocol ChatForm {
   var visitorInfo: ChatProvidersSDK.VisitorInfo? { get }
@@ -328,11 +354,19 @@ public protocol ChatForm {
   var message: Swift.String { get }
   init(visitorInfo: ChatProvidersSDK.VisitorInfo?, departmentId: Swift.String?, message: Swift.String)
 }
-final public class ObserveBehaviour {
+final public class ObserveBehaviour : Swift.Equatable, Swift.Hashable {
+  public static func == (lhs: ChatProvidersSDK.ObserveBehaviour, rhs: ChatProvidersSDK.ObserveBehaviour) -> Swift.Bool
   @objc deinit
+  final public var identifier: ChatProvidersSDK.ObservableIdentifier? {
+    get
+  }
   public init()
   final public func observe(_ block: () -> ChatProvidersSDK.ObservationToken?)
   final public func unobserve()
+  final public func hash(into hasher: inout Swift.Hasher)
+  final public var hashValue: Swift.Int {
+    get
+  }
 }
 final public class ObserveBehaviours {
   @objc deinit
@@ -340,6 +374,8 @@ final public class ObserveBehaviours {
   final public func addBehaviour(_ behaviour: ChatProvidersSDK.ObserveBehaviour)
   final public func addBehaviours(_ behaviours: ChatProvidersSDK.ObserveBehaviour...)
   final public func unobserve()
+  final public func contains(identifier: ChatProvidersSDK.ObservableIdentifier) -> Swift.Bool
+  final public func remove(identifier: ChatProvidersSDK.ObservableIdentifier)
 }
 extension ObservationToken {
   final public func asBehaviour() -> ChatProvidersSDK.ObserveBehaviour
@@ -348,9 +384,15 @@ extension ObservationToken {
   @objc final public var settings: ChatProvidersSDK.ChatSettings {
     @objc get
   }
-  @objc final public func observeChatSettings(_ completion: @escaping (ChatProvidersSDK.ChatSettings) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  final public func observeChatSettings(identifier: ChatProvidersSDK.ObservableIdentifier = .uuid(), _ completion: @escaping (ChatProvidersSDK.ChatSettings) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
   @objc deinit
   @objc override dynamic public init()
+}
+@objc extension SettingsProvider {
+  @objc @available(swift, obsoleted: 1.0)
+  final public func observeChatSettings(identifier: Swift.String, _ completion: @escaping (ChatProvidersSDK.ChatSettings) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @objc @available(swift, obsoleted: 1.0)
+  final public func observeChatSettings(_ completion: @escaping (ChatProvidersSDK.ChatSettings) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
 }
 @objc(ZDKChatState) final public class ChatState : ObjectiveC.NSObject {
   @objc public static let initial: ChatProvidersSDK.ChatState
@@ -682,6 +724,9 @@ extension ChatRating {
     @objc get
     @objc set
   }
+  @objc public static var configuration: ChatProvidersSDK.ChatAPIConfiguration {
+    @objc get
+  }
   @objc public static var hasIdentity: Swift.Bool {
     @objc get
   }
@@ -773,6 +818,7 @@ extension OfflineForm {
   @available(*, deprecated, message: "This API is no longer supported")
   @objc final public func requestChat()
   final public func getChatInfo(_ completion: @escaping (Swift.Result<ChatProvidersSDK.ChatInfo, Swift.Error>) -> Swift.Void)
+  final public func setDepartment(_ name: Swift.String?, completion: ((Swift.Result<Swift.String?, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
   @objc final public func sendTyping(isTyping: Swift.Bool)
   final public func sendOfflineForm(_ offlineForm: ChatProvidersSDK.OfflineForm, completion: ((Swift.Result<ChatProvidersSDK.OfflineForm, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
   final public func sendMessage(_ message: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
@@ -784,13 +830,15 @@ extension OfflineForm {
   final public func sendChatComment(_ comment: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
   final public func sendEmailTranscript(_ email: Swift.String, completion: ((Swift.Result<Swift.String, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
   final public func endChat(_ completion: ((Swift.Result<Swift.Bool, ChatProvidersSDK.DeliveryStatusError>) -> Swift.Void)? = nil)
-  @objc final public func observeChatState(_ completion: @escaping (ChatProvidersSDK.ChatState) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  final public func observeChatState(identifier: ChatProvidersSDK.ObservableIdentifier = .uuid(), _ completion: @escaping (ChatProvidersSDK.ChatState) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
   @objc override dynamic public init()
   @objc deinit
 }
 @objc(ZDKChatProvider) extension ChatProvider {
   @available(swift, obsoleted: 1.0)
   @objc final public func getChatInfo(_ completion: @escaping ((ChatProvidersSDK.ChatInfo?, Swift.Error?) -> Swift.Void))
+  @objc @available(swift, obsoleted: 1.0)
+  final public func setDepartment(_ name: Swift.String?, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
   @available(swift, obsoleted: 1.0)
   @objc final public func sendMessage(_ message: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)?)
   @available(swift, obsoleted: 1.0)
@@ -811,6 +859,10 @@ extension OfflineForm {
   @objc final public func sendEmailTranscript(_ email: Swift.String, completion: ((Swift.String?, Swift.Error?) -> Swift.Void)? = nil)
   @available(swift, obsoleted: 1.0)
   @objc final public func endChat(_ completion: ((Swift.Bool, Swift.Error?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc final public func observeChatState(identifier: Swift.String, _ completion: @escaping (ChatProvidersSDK.ChatState) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
+  @available(swift, obsoleted: 1.0)
+  @objc final public func observeChatState(_ completion: @escaping (ChatProvidersSDK.ChatState) -> Swift.Void) -> ChatProvidersSDK.ObservationToken
 }
 @objc(ZDKAgent) final public class Agent : ObjectiveC.NSObject {
   @objc final public let nick: Swift.String

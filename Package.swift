@@ -8,7 +8,9 @@ let package = Package(
     products: [
         .library(
             name: "ZendeskChatProvidersSDK",
-            targets: ["ZendeskChatProvidersSDK"]
+            targets: [
+                "ZendeskChatProvidersSDK"
+            ]
         )
     ],
     targets: [
