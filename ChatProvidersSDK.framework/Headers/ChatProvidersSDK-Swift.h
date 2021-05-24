@@ -215,6 +215,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 enum ZDKChatAccountStatus : NSInteger;
 @class ZDKDepartment;
 
+/// The <code>ZDKChatAccount</code> model stores information about the chat account,
+/// such as the current <code>accountStatus</code> and the list of <code>Department</code>s associated with the account
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
@@ -226,7 +228,9 @@ SWIFT_CLASS_NAMED("Account")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-/// Returns TRUE if department with given name exists
+///
+/// returns:
+/// <code>True</code> if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -280,6 +284,7 @@ SWIFT_CLASS_NAMED("Agent")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Possible Authentication related error codes
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKAuthenticationErrorCode, "AuthenticationErrorCode", open) {
   ZDKAuthenticationErrorCodeInvalidAccountKey = 500,
   ZDKAuthenticationErrorCodeInvalidAccessToken = 501,
@@ -573,6 +578,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 
 
+/// Chat comment in relation to a Chat rating.
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
 @property (nonatomic, readonly, copy) NSString * _Nullable comment;
@@ -612,6 +618,7 @@ typedef SWIFT_ENUM(NSInteger, ChatError, open) {
 static NSString * _Nonnull const ChatErrorDomain = @"ChatProvidersSDK.ChatError";
 
 
+/// <code>ZDKChatInfo</code> contains information about the chat session, such as if there is a chat ongoing.
 SWIFT_CLASS_NAMED("ChatInfo")
 @interface ZDKChatInfo : NSObject
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -634,6 +641,7 @@ enum ZDKDeliveryStatus : NSInteger;
 @property (nonatomic, readonly) enum ZDKDeliveryStatus deliveryStatus;
 @end
 
+/// An enum of the message types that can be in sent/received in a chat session
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat message
   ZDKChatLogTypeMessage = 0,
@@ -793,6 +801,7 @@ enum ZDKRating : NSInteger;
 @end
 
 
+/// A Chat rating left by the user after an agent requested it. Can be <code>none</code>, <code>good</code>, or <code>bad</code>
 SWIFT_CLASS_NAMED("ChatRating")
 @interface ZDKChatRating : ZDKChatLog
 /// The chat rating
@@ -812,6 +821,7 @@ SWIFT_CLASS_NAMED("ChatRating")
 @end
 
 
+/// Chat Rating Request (sent by the agent)
 SWIFT_CLASS_NAMED("ChatRatingRequest")
 @interface ZDKRatingRequest : ZDKChatLog
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -843,6 +853,8 @@ typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
 };
 
 
+/// The <code>ZDKChatSettings</code> model stores information about the chat account’s settings,
+/// such as the <code>fileSizeLimit</code>, whether attachments are enabled, and the list of accepted file extensions.
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSettings * _Nonnull initial;)
@@ -986,6 +998,7 @@ SWIFT_CLASS_NAMED("Department")
 
 
 
+/// Protocol that an object that handles authentication should conform to. Called by the <code>ChatSDK</code> everytime authentication is required.
 SWIFT_PROTOCOL_NAMED("JWTAuthenticator")
 @protocol ZDKJWTAuthenticator <NSObject>
 /// This function is called on behalf of ChatSDK every-time a new <code>JWT</code> token is required to authenticate your user.
@@ -1113,6 +1126,7 @@ SWIFT_CLASS_NAMED("Providers")
 
 enum ZDKPushNotificationType : NSInteger;
 
+/// <code>PushNotificationData</code> can be used to gather information about Chat related push notifications
 SWIFT_CLASS_NAMED("PushNotificationData")
 @interface ZDKPushNotificationData : NSObject
 /// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
@@ -1134,6 +1148,7 @@ SWIFT_CLASS_NAMED("PushNotificationData")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Enum representing the different types of notifications that can be received for Chat
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
 /// Chat has ended
   ZDKPushNotificationTypeChatEnded = 0,
@@ -1320,6 +1335,7 @@ SWIFT_CLASS_NAMED("VisitorPath")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+/// Delivery Status of the <code>ChatLog</code>
 typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
   ZDKDeliveryStatusPending = 0,
   ZDKDeliveryStatusDelivered = 1,
@@ -1332,9 +1348,13 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", 
   ZDKDepartmentStatusAway = 2,
 };
 
+/// A rating that can be assigned to the chat
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {
+/// No rating assigned yet
   ZDKRatingNone = 0,
+/// good
   ZDKRatingGood = 1,
+/// bad
   ZDKRatingBad = 2,
 };
 
@@ -1558,6 +1578,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 enum ZDKChatAccountStatus : NSInteger;
 @class ZDKDepartment;
 
+/// The <code>ZDKChatAccount</code> model stores information about the chat account,
+/// such as the current <code>accountStatus</code> and the list of <code>Department</code>s associated with the account
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
@@ -1569,7 +1591,9 @@ SWIFT_CLASS_NAMED("Account")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-/// Returns TRUE if department with given name exists
+///
+/// returns:
+/// <code>True</code> if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -1623,6 +1647,7 @@ SWIFT_CLASS_NAMED("Agent")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Possible Authentication related error codes
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKAuthenticationErrorCode, "AuthenticationErrorCode", open) {
   ZDKAuthenticationErrorCodeInvalidAccountKey = 500,
   ZDKAuthenticationErrorCodeInvalidAccessToken = 501,
@@ -1916,6 +1941,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 
 
+/// Chat comment in relation to a Chat rating.
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
 @property (nonatomic, readonly, copy) NSString * _Nullable comment;
@@ -1955,6 +1981,7 @@ typedef SWIFT_ENUM(NSInteger, ChatError, open) {
 static NSString * _Nonnull const ChatErrorDomain = @"ChatProvidersSDK.ChatError";
 
 
+/// <code>ZDKChatInfo</code> contains information about the chat session, such as if there is a chat ongoing.
 SWIFT_CLASS_NAMED("ChatInfo")
 @interface ZDKChatInfo : NSObject
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -1977,6 +2004,7 @@ enum ZDKDeliveryStatus : NSInteger;
 @property (nonatomic, readonly) enum ZDKDeliveryStatus deliveryStatus;
 @end
 
+/// An enum of the message types that can be in sent/received in a chat session
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat message
   ZDKChatLogTypeMessage = 0,
@@ -2136,6 +2164,7 @@ enum ZDKRating : NSInteger;
 @end
 
 
+/// A Chat rating left by the user after an agent requested it. Can be <code>none</code>, <code>good</code>, or <code>bad</code>
 SWIFT_CLASS_NAMED("ChatRating")
 @interface ZDKChatRating : ZDKChatLog
 /// The chat rating
@@ -2155,6 +2184,7 @@ SWIFT_CLASS_NAMED("ChatRating")
 @end
 
 
+/// Chat Rating Request (sent by the agent)
 SWIFT_CLASS_NAMED("ChatRatingRequest")
 @interface ZDKRatingRequest : ZDKChatLog
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -2186,6 +2216,8 @@ typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
 };
 
 
+/// The <code>ZDKChatSettings</code> model stores information about the chat account’s settings,
+/// such as the <code>fileSizeLimit</code>, whether attachments are enabled, and the list of accepted file extensions.
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSettings * _Nonnull initial;)
@@ -2329,6 +2361,7 @@ SWIFT_CLASS_NAMED("Department")
 
 
 
+/// Protocol that an object that handles authentication should conform to. Called by the <code>ChatSDK</code> everytime authentication is required.
 SWIFT_PROTOCOL_NAMED("JWTAuthenticator")
 @protocol ZDKJWTAuthenticator <NSObject>
 /// This function is called on behalf of ChatSDK every-time a new <code>JWT</code> token is required to authenticate your user.
@@ -2456,6 +2489,7 @@ SWIFT_CLASS_NAMED("Providers")
 
 enum ZDKPushNotificationType : NSInteger;
 
+/// <code>PushNotificationData</code> can be used to gather information about Chat related push notifications
 SWIFT_CLASS_NAMED("PushNotificationData")
 @interface ZDKPushNotificationData : NSObject
 /// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
@@ -2477,6 +2511,7 @@ SWIFT_CLASS_NAMED("PushNotificationData")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Enum representing the different types of notifications that can be received for Chat
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
 /// Chat has ended
   ZDKPushNotificationTypeChatEnded = 0,
@@ -2663,6 +2698,7 @@ SWIFT_CLASS_NAMED("VisitorPath")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+/// Delivery Status of the <code>ChatLog</code>
 typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
   ZDKDeliveryStatusPending = 0,
   ZDKDeliveryStatusDelivered = 1,
@@ -2675,9 +2711,13 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", 
   ZDKDepartmentStatusAway = 2,
 };
 
+/// A rating that can be assigned to the chat
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {
+/// No rating assigned yet
   ZDKRatingNone = 0,
+/// good
   ZDKRatingGood = 1,
+/// bad
   ZDKRatingBad = 2,
 };
 
@@ -2901,6 +2941,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 enum ZDKChatAccountStatus : NSInteger;
 @class ZDKDepartment;
 
+/// The <code>ZDKChatAccount</code> model stores information about the chat account,
+/// such as the current <code>accountStatus</code> and the list of <code>Department</code>s associated with the account
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
@@ -2912,7 +2954,9 @@ SWIFT_CLASS_NAMED("Account")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-/// Returns TRUE if department with given name exists
+///
+/// returns:
+/// <code>True</code> if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -2966,6 +3010,7 @@ SWIFT_CLASS_NAMED("Agent")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Possible Authentication related error codes
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKAuthenticationErrorCode, "AuthenticationErrorCode", open) {
   ZDKAuthenticationErrorCodeInvalidAccountKey = 500,
   ZDKAuthenticationErrorCodeInvalidAccessToken = 501,
@@ -3259,6 +3304,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 
 
+/// Chat comment in relation to a Chat rating.
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
 @property (nonatomic, readonly, copy) NSString * _Nullable comment;
@@ -3298,6 +3344,7 @@ typedef SWIFT_ENUM(NSInteger, ChatError, open) {
 static NSString * _Nonnull const ChatErrorDomain = @"ChatProvidersSDK.ChatError";
 
 
+/// <code>ZDKChatInfo</code> contains information about the chat session, such as if there is a chat ongoing.
 SWIFT_CLASS_NAMED("ChatInfo")
 @interface ZDKChatInfo : NSObject
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -3320,6 +3367,7 @@ enum ZDKDeliveryStatus : NSInteger;
 @property (nonatomic, readonly) enum ZDKDeliveryStatus deliveryStatus;
 @end
 
+/// An enum of the message types that can be in sent/received in a chat session
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat message
   ZDKChatLogTypeMessage = 0,
@@ -3479,6 +3527,7 @@ enum ZDKRating : NSInteger;
 @end
 
 
+/// A Chat rating left by the user after an agent requested it. Can be <code>none</code>, <code>good</code>, or <code>bad</code>
 SWIFT_CLASS_NAMED("ChatRating")
 @interface ZDKChatRating : ZDKChatLog
 /// The chat rating
@@ -3498,6 +3547,7 @@ SWIFT_CLASS_NAMED("ChatRating")
 @end
 
 
+/// Chat Rating Request (sent by the agent)
 SWIFT_CLASS_NAMED("ChatRatingRequest")
 @interface ZDKRatingRequest : ZDKChatLog
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -3529,6 +3579,8 @@ typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
 };
 
 
+/// The <code>ZDKChatSettings</code> model stores information about the chat account’s settings,
+/// such as the <code>fileSizeLimit</code>, whether attachments are enabled, and the list of accepted file extensions.
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSettings * _Nonnull initial;)
@@ -3672,6 +3724,7 @@ SWIFT_CLASS_NAMED("Department")
 
 
 
+/// Protocol that an object that handles authentication should conform to. Called by the <code>ChatSDK</code> everytime authentication is required.
 SWIFT_PROTOCOL_NAMED("JWTAuthenticator")
 @protocol ZDKJWTAuthenticator <NSObject>
 /// This function is called on behalf of ChatSDK every-time a new <code>JWT</code> token is required to authenticate your user.
@@ -3799,6 +3852,7 @@ SWIFT_CLASS_NAMED("Providers")
 
 enum ZDKPushNotificationType : NSInteger;
 
+/// <code>PushNotificationData</code> can be used to gather information about Chat related push notifications
 SWIFT_CLASS_NAMED("PushNotificationData")
 @interface ZDKPushNotificationData : NSObject
 /// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
@@ -3820,6 +3874,7 @@ SWIFT_CLASS_NAMED("PushNotificationData")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Enum representing the different types of notifications that can be received for Chat
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
 /// Chat has ended
   ZDKPushNotificationTypeChatEnded = 0,
@@ -4006,6 +4061,7 @@ SWIFT_CLASS_NAMED("VisitorPath")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+/// Delivery Status of the <code>ChatLog</code>
 typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
   ZDKDeliveryStatusPending = 0,
   ZDKDeliveryStatusDelivered = 1,
@@ -4018,9 +4074,13 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", 
   ZDKDepartmentStatusAway = 2,
 };
 
+/// A rating that can be assigned to the chat
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {
+/// No rating assigned yet
   ZDKRatingNone = 0,
+/// good
   ZDKRatingGood = 1,
+/// bad
   ZDKRatingBad = 2,
 };
 
@@ -4247,6 +4307,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 enum ZDKChatAccountStatus : NSInteger;
 @class ZDKDepartment;
 
+/// The <code>ZDKChatAccount</code> model stores information about the chat account,
+/// such as the current <code>accountStatus</code> and the list of <code>Department</code>s associated with the account
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
@@ -4258,7 +4320,9 @@ SWIFT_CLASS_NAMED("Account")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-/// Returns TRUE if department with given name exists
+///
+/// returns:
+/// <code>True</code> if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -4312,6 +4376,7 @@ SWIFT_CLASS_NAMED("Agent")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Possible Authentication related error codes
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKAuthenticationErrorCode, "AuthenticationErrorCode", open) {
   ZDKAuthenticationErrorCodeInvalidAccountKey = 500,
   ZDKAuthenticationErrorCodeInvalidAccessToken = 501,
@@ -4605,6 +4670,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 
 
+/// Chat comment in relation to a Chat rating.
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
 @property (nonatomic, readonly, copy) NSString * _Nullable comment;
@@ -4644,6 +4710,7 @@ typedef SWIFT_ENUM(NSInteger, ChatError, open) {
 static NSString * _Nonnull const ChatErrorDomain = @"ChatProvidersSDK.ChatError";
 
 
+/// <code>ZDKChatInfo</code> contains information about the chat session, such as if there is a chat ongoing.
 SWIFT_CLASS_NAMED("ChatInfo")
 @interface ZDKChatInfo : NSObject
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -4666,6 +4733,7 @@ enum ZDKDeliveryStatus : NSInteger;
 @property (nonatomic, readonly) enum ZDKDeliveryStatus deliveryStatus;
 @end
 
+/// An enum of the message types that can be in sent/received in a chat session
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat message
   ZDKChatLogTypeMessage = 0,
@@ -4825,6 +4893,7 @@ enum ZDKRating : NSInteger;
 @end
 
 
+/// A Chat rating left by the user after an agent requested it. Can be <code>none</code>, <code>good</code>, or <code>bad</code>
 SWIFT_CLASS_NAMED("ChatRating")
 @interface ZDKChatRating : ZDKChatLog
 /// The chat rating
@@ -4844,6 +4913,7 @@ SWIFT_CLASS_NAMED("ChatRating")
 @end
 
 
+/// Chat Rating Request (sent by the agent)
 SWIFT_CLASS_NAMED("ChatRatingRequest")
 @interface ZDKRatingRequest : ZDKChatLog
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -4875,6 +4945,8 @@ typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
 };
 
 
+/// The <code>ZDKChatSettings</code> model stores information about the chat account’s settings,
+/// such as the <code>fileSizeLimit</code>, whether attachments are enabled, and the list of accepted file extensions.
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSettings * _Nonnull initial;)
@@ -5018,6 +5090,7 @@ SWIFT_CLASS_NAMED("Department")
 
 
 
+/// Protocol that an object that handles authentication should conform to. Called by the <code>ChatSDK</code> everytime authentication is required.
 SWIFT_PROTOCOL_NAMED("JWTAuthenticator")
 @protocol ZDKJWTAuthenticator <NSObject>
 /// This function is called on behalf of ChatSDK every-time a new <code>JWT</code> token is required to authenticate your user.
@@ -5145,6 +5218,7 @@ SWIFT_CLASS_NAMED("Providers")
 
 enum ZDKPushNotificationType : NSInteger;
 
+/// <code>PushNotificationData</code> can be used to gather information about Chat related push notifications
 SWIFT_CLASS_NAMED("PushNotificationData")
 @interface ZDKPushNotificationData : NSObject
 /// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
@@ -5166,6 +5240,7 @@ SWIFT_CLASS_NAMED("PushNotificationData")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Enum representing the different types of notifications that can be received for Chat
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
 /// Chat has ended
   ZDKPushNotificationTypeChatEnded = 0,
@@ -5352,6 +5427,7 @@ SWIFT_CLASS_NAMED("VisitorPath")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+/// Delivery Status of the <code>ChatLog</code>
 typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
   ZDKDeliveryStatusPending = 0,
   ZDKDeliveryStatusDelivered = 1,
@@ -5364,9 +5440,13 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", 
   ZDKDepartmentStatusAway = 2,
 };
 
+/// A rating that can be assigned to the chat
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {
+/// No rating assigned yet
   ZDKRatingNone = 0,
+/// good
   ZDKRatingGood = 1,
+/// bad
   ZDKRatingBad = 2,
 };
 
@@ -5590,6 +5670,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 enum ZDKChatAccountStatus : NSInteger;
 @class ZDKDepartment;
 
+/// The <code>ZDKChatAccount</code> model stores information about the chat account,
+/// such as the current <code>accountStatus</code> and the list of <code>Department</code>s associated with the account
 SWIFT_CLASS_NAMED("Account")
 @interface ZDKChatAccount : NSObject
 /// The current status of the <code>Account</code>
@@ -5601,7 +5683,9 @@ SWIFT_CLASS_NAMED("Account")
 /// \param object the object to compare against
 ///
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
-/// Returns TRUE if department with given name exists
+///
+/// returns:
+/// <code>True</code> if department with given name exists
 - (BOOL)containsDepartmentWith:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @property (nonatomic, readonly, copy) NSString * _Nonnull debugDescription;
@@ -5655,6 +5739,7 @@ SWIFT_CLASS_NAMED("Agent")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Possible Authentication related error codes
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKAuthenticationErrorCode, "AuthenticationErrorCode", open) {
   ZDKAuthenticationErrorCodeInvalidAccountKey = 500,
   ZDKAuthenticationErrorCodeInvalidAccessToken = 501,
@@ -5948,6 +6033,7 @@ SWIFT_CLASS_NAMED("ChatAttachmentMessage")
 
 
 
+/// Chat comment in relation to a Chat rating.
 SWIFT_CLASS_NAMED("ChatComment")
 @interface ZDKChatComment : ZDKChatLog
 @property (nonatomic, readonly, copy) NSString * _Nullable comment;
@@ -5987,6 +6073,7 @@ typedef SWIFT_ENUM(NSInteger, ChatError, open) {
 static NSString * _Nonnull const ChatErrorDomain = @"ChatProvidersSDK.ChatError";
 
 
+/// <code>ZDKChatInfo</code> contains information about the chat session, such as if there is a chat ongoing.
 SWIFT_CLASS_NAMED("ChatInfo")
 @interface ZDKChatInfo : NSObject
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -6009,6 +6096,7 @@ enum ZDKDeliveryStatus : NSInteger;
 @property (nonatomic, readonly) enum ZDKDeliveryStatus deliveryStatus;
 @end
 
+/// An enum of the message types that can be in sent/received in a chat session
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKChatLogType, "ChatLogType", open) {
 /// Chat message
   ZDKChatLogTypeMessage = 0,
@@ -6168,6 +6256,7 @@ enum ZDKRating : NSInteger;
 @end
 
 
+/// A Chat rating left by the user after an agent requested it. Can be <code>none</code>, <code>good</code>, or <code>bad</code>
 SWIFT_CLASS_NAMED("ChatRating")
 @interface ZDKChatRating : ZDKChatLog
 /// The chat rating
@@ -6187,6 +6276,7 @@ SWIFT_CLASS_NAMED("ChatRating")
 @end
 
 
+/// Chat Rating Request (sent by the agent)
 SWIFT_CLASS_NAMED("ChatRatingRequest")
 @interface ZDKRatingRequest : ZDKChatLog
 /// Returns a Boolean value that indicates whether the receiver and a given object are equal.
@@ -6218,6 +6308,8 @@ typedef SWIFT_ENUM(NSInteger, ChatSessionStatus, open) {
 };
 
 
+/// The <code>ZDKChatSettings</code> model stores information about the chat account’s settings,
+/// such as the <code>fileSizeLimit</code>, whether attachments are enabled, and the list of accepted file extensions.
 SWIFT_CLASS_NAMED("ChatSettings")
 @interface ZDKChatSettings : NSObject
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) ZDKChatSettings * _Nonnull initial;)
@@ -6361,6 +6453,7 @@ SWIFT_CLASS_NAMED("Department")
 
 
 
+/// Protocol that an object that handles authentication should conform to. Called by the <code>ChatSDK</code> everytime authentication is required.
 SWIFT_PROTOCOL_NAMED("JWTAuthenticator")
 @protocol ZDKJWTAuthenticator <NSObject>
 /// This function is called on behalf of ChatSDK every-time a new <code>JWT</code> token is required to authenticate your user.
@@ -6488,6 +6581,7 @@ SWIFT_CLASS_NAMED("Providers")
 
 enum ZDKPushNotificationType : NSInteger;
 
+/// <code>PushNotificationData</code> can be used to gather information about Chat related push notifications
 SWIFT_CLASS_NAMED("PushNotificationData")
 @interface ZDKPushNotificationData : NSObject
 /// type of <code>PushNotification</code>, can be either <code>chatEnded</code> or <code>message</code>
@@ -6509,6 +6603,7 @@ SWIFT_CLASS_NAMED("PushNotificationData")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Enum representing the different types of notifications that can be received for Chat
 typedef SWIFT_ENUM_NAMED(NSInteger, ZDKPushNotificationType, "PushNotificationType", open) {
 /// Chat has ended
   ZDKPushNotificationTypeChatEnded = 0,
@@ -6695,6 +6790,7 @@ SWIFT_CLASS_NAMED("VisitorPath")
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @end
 
+/// Delivery Status of the <code>ChatLog</code>
 typedef SWIFT_ENUM(NSInteger, ZDKDeliveryStatus, open) {
   ZDKDeliveryStatusPending = 0,
   ZDKDeliveryStatusDelivered = 1,
@@ -6707,9 +6803,13 @@ typedef SWIFT_ENUM_NAMED(NSInteger, ZDKDepartmentStatus, "ZDKDepartmentStatus", 
   ZDKDepartmentStatusAway = 2,
 };
 
+/// A rating that can be assigned to the chat
 typedef SWIFT_ENUM(NSInteger, ZDKRating, open) {
+/// No rating assigned yet
   ZDKRatingNone = 0,
+/// good
   ZDKRatingGood = 1,
+/// bad
   ZDKRatingBad = 2,
 };
 
