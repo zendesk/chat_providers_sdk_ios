@@ -9,13 +9,13 @@ let package = Package(
         .library(
             name: "ZendeskChatProvidersSDK",
             targets: [
-                "ZendeskChatProvidersSDK"
+                "ChatProvidersSDK"
             ]
         )
     ],
     targets: [
         .binaryTarget(
-            name: "ZendeskChatProvidersSDK",
+            name: "ChatProvidersSDK",
             path: "ChatProvidersSDK.xcframework"
         )
     ]
