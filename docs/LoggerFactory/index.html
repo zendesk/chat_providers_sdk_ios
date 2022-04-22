@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatProvidersSDK - LoggerFactory</title>
+    <link rel="stylesheet" type="text/css" href="/chat_providers_sdk_ios/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/chat_providers_sdk_ios">
+            <strong>
+                ChatProvidersSDK
+            </strong>
+            <span>Documentation</span>
+        </a>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#requirements">Requirements</a><ul><li class="function"><a href="#loggerfactory.getloggerfor(namespace:andclass:)">get​Logger​For(namespace:​and​Class:​)</a></li><li class="function"><a href="#loggerfactory.setdefault(level:)">set​Default(level:​)</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Protocol</small>
+    <code class="name">Logger​Factory</code>
+</h1>
+
+<div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">protocol</span> <span class="type">LoggerFactory</span>  </body></html></code></pre>
+</div>
+<div class="discussion">
+    <ul>
+<li>Factory for obtaining namespaced loggers.</li>
+<li></li>
+<li>
+<ul>
+<li>author: Zendesk</li>
+</ul>
+</li>
+</ul>
+
+</div>
+
+
+
+
+    <section id="requirements">
+        <h2>Requirements</h2>
+
+        <div role="article" class="function" id="loggerfactory.getloggerfor(namespace:andclass:)">
+    <h3>
+        <code>get​Logger​For(namespace:​and​Class:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">getLoggerFor</span>(<span class="variable">namespace</span>: <span class="type">String</span>, <span class="variable">andClass</span> <span class="variable">clazz</span>: <span class="keyword">Any</span>) -&gt; <a href="/chat_providers_sdk_ios/Log"><span class="type">Log</span></a></body></html></code></pre>
+</div>
+<div class="discussion">
+    <ul>
+<li>Get the current logger.</li>
+<li></li>
+<li>
+<ul>
+<li>parameters:</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>namespace: namespace in which to report this error</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>clazz: the class requesting the logger</li>
+</ul>
+</li>
+<li>-returns: the logger</li>
+</ul>
+
+</div>
+</div>
+<div role="article" class="function" id="loggerfactory.setdefault(level:)">
+    <h3>
+        <code>set​Default(level:​)</code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">setDefault</span>(<span class="variable">level</span>: <a href="/chat_providers_sdk_ios/LogLevel"><span class="type">LogLevel</span></a>) </body></html></code></pre>
+</div>
+<div class="discussion">
+    <ul>
+<li>Set the default log level.</li>
+<li></li>
+<li>
+<ul>
+<li>parameters:</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>level: the desired level</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+    </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2022-04-22T10:02:50+0000">April 22, 2022</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatProvidersSDK - ChatProvidersSDK</title>
+    <link rel="stylesheet" type="text/css" href="/chat_providers_sdk_ios/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/chat_providers_sdk_ios">
+            <strong>
+                ChatProvidersSDK
+            </strong>
+            <span>Documentation</span>
+        </a>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#classes">Classes</a></li><li><a href="#structures">Structures</a></li><li><a href="#enumerations">Enumerations</a></li><li><a href="#protocols">Protocols</a></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+                <section id="classes">
+        <h2>Classes</h2>
+        <dl>
+            <dt class="class">
+    <a href="/chat_providers_sdk_ios/Chat" title="class - Chat">
+        Chat
+    </a>
+</dt>
+<dd>
+    <p><code>Chat</code> is a singleton class of the <code>ChatProviderSDK</code>.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatAPIConfiguration" title="class - ChatAPIConfiguration">
+        Chat​APIConfiguration
+    </a>
+</dt>
+<dd>
+    <p>A set of configurations that are associated with each chat session.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/Account" title="class - Account">
+        Account
+    </a>
+</dt>
+<dd>
+    <p>The <code>ZDKChatAccount</code> model stores information about the chat account,
+such as the current <code>accountStatus</code> and the list of <code>Department</code>s associated with the account</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/Agent" title="class - Agent">
+        Agent
+    </a>
+</dt>
+<dd>
+    <p>The <code>ZDKAgent</code> model has information about an agent in a chat session,
+such as their backend <code>id</code> represented as <code>nick</code>, their display <code>name</code>, their <code>avatar</code>, and if they're currently typing.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatAttachment" title="class - ChatAttachment">
+        Chat​Attachment
+    </a>
+</dt>
+<dd>
+    <p>The <code>ZDKChatAttachment</code> model, contains information about attachments that were sent or received
+by the visitor.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatSettings" title="class - ChatSettings">
+        Chat​Settings
+    </a>
+</dt>
+<dd>
+    <p>The <code>ZDKChatSettings</code> model stores information about the chat account's settings,
+such as the <code>fileSizeLimit</code>, whether attachments are enabled, and the list of accepted file extensions.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatState" title="class - ChatState">
+        Chat​State
+    </a>
+</dt>
+<dd>
+    <p><code>ZDKChatState</code> is a model representation of the current chat session.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/QueuePosition" title="class - QueuePosition">
+        Queue​Position
+    </a>
+</dt>
+<dd>
+    <p><code>ZDKQueuePosition</code> is a model that represents the current queue position of the visitor.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/Department" title="class - Department">
+        Department
+    </a>
+</dt>
+<dd>
+    <p>Department model contains id associated with the department,
+the department name, and the current status of the department.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/OfflineForm" title="class - OfflineForm">
+        Offline​Form
+    </a>
+</dt>
+<dd>
+    <p>Offline form is formed from the given fields:
+visitor info - name, email, phone
+department - department id
+message - visitor's message</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatAttachmentMessage" title="class - ChatAttachmentMessage">
+        Chat​Attachment​Message
+    </a>
+</dt>
+<dd>
+    <p>The Chat Log attachment</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatComment" title="class - ChatComment">
+        Chat​Comment
+    </a>
+</dt>
+<dd>
+    <p>Chat comment in relation to a Chat rating.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatLog" title="class - ChatLog">
+        Chat​Log
+    </a>
+</dt>
+<dd>
+    <p>Base class for chat log events that may occur in a chat session</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatMemberJoin" title="class - ChatMemberJoin">
+        Chat​Member​Join
+    </a>
+</dt>
+<dd>
+    <p>Chat Member Join event</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatMemberLeave" title="class - ChatMemberLeave">
+        Chat​Member​Leave
+    </a>
+</dt>
+<dd>
+    <p>Chat Member Leave event</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatMessage" title="class - ChatMessage">
+        Chat​Message
+    </a>
+</dt>
+<dd>
+    <p>Chat message</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatOptionsMessage" title="class - ChatOptionsMessage">
+        Chat​Options​Message
+    </a>
+</dt>
+<dd>
+    <p>Questions from agent with multiple options that a user can respond with</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatRating" title="class - ChatRating">
+        Chat​Rating
+    </a>
+</dt>
+<dd>
+    <p>A Chat rating left by the user after an agent requested it. Can be <code>none</code>, <code>good</code>, or <code>bad</code></p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatRatingRequest" title="class - ChatRatingRequest">
+        Chat​Rating​Request
+    </a>
+</dt>
+<dd>
+    <p>Chat Rating Request (sent by the agent)</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/VisitorInfo" title="class - VisitorInfo">
+        Visitor​Info
+    </a>
+</dt>
+<dd>
+    <p>Visitor information that can be seen in the Chat dashboard
+Contains <code>name</code>, <code>email</code>, and <code>phoneNumber</code></p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/VisitorPath" title="class - VisitorPath">
+        Visitor​Path
+    </a>
+</dt>
+<dd>
+    <p>A Custom Update Event that can be seen in the agent dashboard.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatInfo" title="class - ChatInfo">
+        Chat​Info
+    </a>
+</dt>
+<dd>
+    <p><code>ZDKChatInfo</code> contains information about the chat session, such as if there is a chat ongoing.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/Logger" title="class - Logger">
+        Logger
+    </a>
+</dt>
+<dd>
+    
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/PushNotificationData" title="class - PushNotificationData">
+        Push​Notification​Data
+    </a>
+</dt>
+<dd>
+    <p><code>PushNotificationData</code> can be used to gather information about Chat related push notifications</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/AccountProvider" title="class - AccountProvider">
+        Account​Provider
+    </a>
+</dt>
+<dd>
+    <p><code>ZDKChatAccountProvider</code> gives the ability to observe account updates.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ChatProvider" title="class - ChatProvider">
+        Chat​Provider
+    </a>
+</dt>
+<dd>
+    <p>The <code>ZDKChatProvider</code> provides APIs to interact and observe the current Chat session.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ConnectionProvider" title="class - ConnectionProvider">
+        Connection​Provider
+    </a>
+</dt>
+<dd>
+    <p><code>ZDKConnectionProvider</code> gives the ability to observe connection updates.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/ProfileProvider" title="class - ProfileProvider">
+        Profile​Provider
+    </a>
+</dt>
+<dd>
+    <p>The <code>ZDKProfileProvider</code> contain APIs to update information about a visitor.
+Such as name, email, phone number, tags, and notes related to the visitor and their session.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/Providers" title="class - Providers">
+        Providers
+    </a>
+</dt>
+<dd>
+    <p><code>ZDKChatProviders</code> is a grouping of all the providers that allow you to, setup for push notifications,
+handle session updates, handle connection state, and interact with the APIs in other ways.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/PushNotificationsProvider" title="class - PushNotificationsProvider">
+        Push​Notifications​Provider
+    </a>
+</dt>
+<dd>
+    <p>The <code>ZDKPushNoticiationProvider</code> provides APIs to subscribe to, and handle Zendesk Chat's Push Notifications.</p>
+
+</dd>
+<dt class="class">
+    <a href="/chat_providers_sdk_ios/SettingsProvider" title="class - SettingsProvider">
+        Settings​Provider
+    </a>
+</dt>
+<dd>
+    <p><code>ZDKSettingsProvider</code> gives the ability to observe settings updates.</p>
+
+</dd>
+        </dl>
+    </section>
+    <section id="structures">
+        <h2>Structures</h2>
+        <dl>
+            <dt class="structure">
+    <a href="/chat_providers_sdk_ios/DebugLogger" title="structure - DebugLogger">
+        Debug​Logger
+    </a>
+</dt>
+<dd>
+    
+</dd>
+        </dl>
+    </section>
+    <section id="enumerations">
+        <h2>Enumerations</h2>
+        <dl>
+            <dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/DeliveryStatus" title="enumeration - DeliveryStatus">
+        Delivery​Status
+    </a>
+</dt>
+<dd>
+    <p>Delivery Status of the <code>ChatLog</code></p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/DeliveryStatusError" title="enumeration - DeliveryStatusError">
+        Delivery​Status​Error
+    </a>
+</dt>
+<dd>
+    <p>Delivery status error describes the reason of a delivery failure</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ZDKDeliveryStatus" title="enumeration - ZDKDeliveryStatus">
+        ZDKDelivery​Status
+    </a>
+</dt>
+<dd>
+    <p>Delivery Status of the <code>ChatLog</code></p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ChatError" title="enumeration - ChatError">
+        Chat​Error
+    </a>
+</dt>
+<dd>
+    <p>Potential errors returned from the ChatProviderSDK</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/AccountStatus" title="enumeration - AccountStatus">
+        Account​Status
+    </a>
+</dt>
+<dd>
+    <p>Account Status</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ChatAttachmentError" title="enumeration - ChatAttachmentError">
+        Chat​Attachment​Error
+    </a>
+</dt>
+<dd>
+    <p>The error of type <code>ChatAttachmentError</code> is emitted when file upload has failed.</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/Rating" title="enumeration - Rating">
+        Rating
+    </a>
+</dt>
+<dd>
+    <p>A rating that can be assigned to the chat</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ZDKRating" title="enumeration - ZDKRating">
+        ZDKRating
+    </a>
+</dt>
+<dd>
+    <p>A rating that can be assigned to the chat</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ChatLogType" title="enumeration - ChatLogType">
+        Chat​Log​Type
+    </a>
+</dt>
+<dd>
+    <p>An enum of the message types that can be in sent/received in a chat session</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/DepartmentStatus" title="enumeration - DepartmentStatus">
+        Department​Status
+    </a>
+</dt>
+<dd>
+    <p>The status of the department.</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ZDKDepartmentStatus" title="enumeration - ZDKDepartmentStatus">
+        ZDKDepartment​Status
+    </a>
+</dt>
+<dd>
+    
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ChatParticipant" title="enumeration - ChatParticipant">
+        Chat​Participant
+    </a>
+</dt>
+<dd>
+    <p>Who sent the message can be user/agent/trigger</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/AuthenticationErrorCode" title="enumeration - AuthenticationErrorCode">
+        Authentication​Error​Code
+    </a>
+</dt>
+<dd>
+    <p>Possible Authentication related error codes</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/AuthenticationError" title="enumeration - AuthenticationError">
+        Authentication​Error
+    </a>
+</dt>
+<dd>
+    <p>Possible Authentication related errors</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ChatSessionStatus" title="enumeration - ChatSessionStatus">
+        Chat​Session​Status
+    </a>
+</dt>
+<dd>
+    <p>Chat session status describes current state of the session</p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/ConnectionStatus" title="enumeration - ConnectionStatus">
+        Connection​Status
+    </a>
+</dt>
+<dd>
+    <p>Represents different states of the<code>ChatSession</code></p>
+
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/LogLevel" title="enumeration - LogLevel">
+        Log​Level
+    </a>
+</dt>
+<dd>
+    
+</dd>
+<dt class="enumeration">
+    <a href="/chat_providers_sdk_ios/PushNotificationData_PushNotificationType" title="enumeration - PushNotificationData.PushNotificationType">
+        Push​Notification​Data.​Push​Notification​Type
+    </a>
+</dt>
+<dd>
+    <p>Enum representing the different types of notifications that can be received for Chat</p>
+
+</dd>
+        </dl>
+    </section>
+    <section id="protocols">
+        <h2>Protocols</h2>
+        <dl>
+            <dt class="protocol">
+    <a href="/chat_providers_sdk_ios/ChatForm" title="protocol - ChatForm">
+        Chat​Form
+    </a>
+</dt>
+<dd>
+    
+</dd>
+<dt class="protocol">
+    <a href="/chat_providers_sdk_ios/ChatLogProtocol" title="protocol - ChatLogProtocol">
+        Chat​Log​Protocol
+    </a>
+</dt>
+<dd>
+    <p>Base protocol representation of a <code>ChatLog</code></p>
+
+</dd>
+<dt class="protocol">
+    <a href="/chat_providers_sdk_ios/JWTAuthenticator" title="protocol - JWTAuthenticator">
+        JWTAuthenticator
+    </a>
+</dt>
+<dd>
+    <p>Protocol that an object that handles authentication should conform to. Called by the <code>ChatSDK</code> everytime authentication is required.</p>
+
+</dd>
+<dt class="protocol">
+    <a href="/chat_providers_sdk_ios/Log" title="protocol - Log">
+        Log
+    </a>
+</dt>
+<dd>
+    
+</dd>
+<dt class="protocol">
+    <a href="/chat_providers_sdk_ios/LoggerFactory" title="protocol - LoggerFactory">
+        Logger​Factory
+    </a>
+</dt>
+<dd>
+    
+</dd>
+<dt class="protocol">
+    <a href="/chat_providers_sdk_ios/Loggable" title="protocol - Loggable">
+        Loggable
+    </a>
+</dt>
+<dd>
+    <p>Protocol that conforms</p>
+
+</dd>
+        </dl>
+    </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2022-04-22T10:02:50+0000">April 22, 2022</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+</p>
+    </footer>
+</body>
+</html>

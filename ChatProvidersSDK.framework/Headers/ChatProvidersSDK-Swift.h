@@ -482,9 +482,13 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 @property (nonatomic, copy) NSString * _Nullable visitorPathTwoValue;
 /// The tags to be set when a chat starts.
 @property (nonatomic, copy) NSArray<NSString *> * _Nonnull tags;
-/// The department to be set when a chat starts.
+/// The department to be set <code>by name</code> when a chat starts.
 /// default is <code>nil</code>
-@property (nonatomic, copy) NSString * _Nullable department;
+@property (nonatomic, copy) NSString * _Nullable department SWIFT_DEPRECATED_MSG("", "departmentName");
+@property (nonatomic, copy) NSString * _Nullable departmentName;
+/// The department to be set <code>by Id</code> when a chat starts.
+/// default is <code>nil</code>
+@property (nonatomic, copy) NSString * _Nullable departmentId;
 /// Set the visitor info.
 /// Default is <code>nil</code>. Pass through fields as empty strings to clear info.
 @property (nonatomic, strong) ZDKVisitorInfo * _Nullable visitorInfo;
@@ -790,6 +794,7 @@ enum ZDKRating : NSInteger;
 @interface ZDKChatProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 - (void)getChatInfo:(void (^ _Nonnull)(ZDKChatInfo * _Nullable, NSError * _Nullable))completion;
 - (void)setDepartment:(NSString * _Nullable)name completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
+- (void)setDepartment:(NSString * _Nonnull)id _:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendMessage:(NSString * _Nonnull)message completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendOfflineForm:(ZDKOfflineForm * _Nonnull)offlineForm completion:(void (^ _Nullable)(ZDKOfflineForm * _Nullable, NSError * _Nullable))completion;
 - (void)resendFailedMessageWithId:(NSString * _Nonnull)id completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
@@ -1849,9 +1854,13 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 @property (nonatomic, copy) NSString * _Nullable visitorPathTwoValue;
 /// The tags to be set when a chat starts.
 @property (nonatomic, copy) NSArray<NSString *> * _Nonnull tags;
-/// The department to be set when a chat starts.
+/// The department to be set <code>by name</code> when a chat starts.
 /// default is <code>nil</code>
-@property (nonatomic, copy) NSString * _Nullable department;
+@property (nonatomic, copy) NSString * _Nullable department SWIFT_DEPRECATED_MSG("", "departmentName");
+@property (nonatomic, copy) NSString * _Nullable departmentName;
+/// The department to be set <code>by Id</code> when a chat starts.
+/// default is <code>nil</code>
+@property (nonatomic, copy) NSString * _Nullable departmentId;
 /// Set the visitor info.
 /// Default is <code>nil</code>. Pass through fields as empty strings to clear info.
 @property (nonatomic, strong) ZDKVisitorInfo * _Nullable visitorInfo;
@@ -2157,6 +2166,7 @@ enum ZDKRating : NSInteger;
 @interface ZDKChatProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 - (void)getChatInfo:(void (^ _Nonnull)(ZDKChatInfo * _Nullable, NSError * _Nullable))completion;
 - (void)setDepartment:(NSString * _Nullable)name completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
+- (void)setDepartment:(NSString * _Nonnull)id _:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendMessage:(NSString * _Nonnull)message completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendOfflineForm:(ZDKOfflineForm * _Nonnull)offlineForm completion:(void (^ _Nullable)(ZDKOfflineForm * _Nullable, NSError * _Nullable))completion;
 - (void)resendFailedMessageWithId:(NSString * _Nonnull)id completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
@@ -3216,9 +3226,13 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 @property (nonatomic, copy) NSString * _Nullable visitorPathTwoValue;
 /// The tags to be set when a chat starts.
 @property (nonatomic, copy) NSArray<NSString *> * _Nonnull tags;
-/// The department to be set when a chat starts.
+/// The department to be set <code>by name</code> when a chat starts.
 /// default is <code>nil</code>
-@property (nonatomic, copy) NSString * _Nullable department;
+@property (nonatomic, copy) NSString * _Nullable department SWIFT_DEPRECATED_MSG("", "departmentName");
+@property (nonatomic, copy) NSString * _Nullable departmentName;
+/// The department to be set <code>by Id</code> when a chat starts.
+/// default is <code>nil</code>
+@property (nonatomic, copy) NSString * _Nullable departmentId;
 /// Set the visitor info.
 /// Default is <code>nil</code>. Pass through fields as empty strings to clear info.
 @property (nonatomic, strong) ZDKVisitorInfo * _Nullable visitorInfo;
@@ -3524,6 +3538,7 @@ enum ZDKRating : NSInteger;
 @interface ZDKChatProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 - (void)getChatInfo:(void (^ _Nonnull)(ZDKChatInfo * _Nullable, NSError * _Nullable))completion;
 - (void)setDepartment:(NSString * _Nullable)name completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
+- (void)setDepartment:(NSString * _Nonnull)id _:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendMessage:(NSString * _Nonnull)message completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendOfflineForm:(ZDKOfflineForm * _Nonnull)offlineForm completion:(void (^ _Nullable)(ZDKOfflineForm * _Nullable, NSError * _Nullable))completion;
 - (void)resendFailedMessageWithId:(NSString * _Nonnull)id completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
@@ -4586,9 +4601,13 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 @property (nonatomic, copy) NSString * _Nullable visitorPathTwoValue;
 /// The tags to be set when a chat starts.
 @property (nonatomic, copy) NSArray<NSString *> * _Nonnull tags;
-/// The department to be set when a chat starts.
+/// The department to be set <code>by name</code> when a chat starts.
 /// default is <code>nil</code>
-@property (nonatomic, copy) NSString * _Nullable department;
+@property (nonatomic, copy) NSString * _Nullable department SWIFT_DEPRECATED_MSG("", "departmentName");
+@property (nonatomic, copy) NSString * _Nullable departmentName;
+/// The department to be set <code>by Id</code> when a chat starts.
+/// default is <code>nil</code>
+@property (nonatomic, copy) NSString * _Nullable departmentId;
 /// Set the visitor info.
 /// Default is <code>nil</code>. Pass through fields as empty strings to clear info.
 @property (nonatomic, strong) ZDKVisitorInfo * _Nullable visitorInfo;
@@ -4894,6 +4913,7 @@ enum ZDKRating : NSInteger;
 @interface ZDKChatProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 - (void)getChatInfo:(void (^ _Nonnull)(ZDKChatInfo * _Nullable, NSError * _Nullable))completion;
 - (void)setDepartment:(NSString * _Nullable)name completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
+- (void)setDepartment:(NSString * _Nonnull)id _:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendMessage:(NSString * _Nonnull)message completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendOfflineForm:(ZDKOfflineForm * _Nonnull)offlineForm completion:(void (^ _Nullable)(ZDKOfflineForm * _Nullable, NSError * _Nullable))completion;
 - (void)resendFailedMessageWithId:(NSString * _Nonnull)id completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
@@ -5953,9 +5973,13 @@ SWIFT_CLASS_NAMED("ChatAPIConfiguration")
 @property (nonatomic, copy) NSString * _Nullable visitorPathTwoValue;
 /// The tags to be set when a chat starts.
 @property (nonatomic, copy) NSArray<NSString *> * _Nonnull tags;
-/// The department to be set when a chat starts.
+/// The department to be set <code>by name</code> when a chat starts.
 /// default is <code>nil</code>
-@property (nonatomic, copy) NSString * _Nullable department;
+@property (nonatomic, copy) NSString * _Nullable department SWIFT_DEPRECATED_MSG("", "departmentName");
+@property (nonatomic, copy) NSString * _Nullable departmentName;
+/// The department to be set <code>by Id</code> when a chat starts.
+/// default is <code>nil</code>
+@property (nonatomic, copy) NSString * _Nullable departmentId;
 /// Set the visitor info.
 /// Default is <code>nil</code>. Pass through fields as empty strings to clear info.
 @property (nonatomic, strong) ZDKVisitorInfo * _Nullable visitorInfo;
@@ -6261,6 +6285,7 @@ enum ZDKRating : NSInteger;
 @interface ZDKChatProvider (SWIFT_EXTENSION(ChatProvidersSDK))
 - (void)getChatInfo:(void (^ _Nonnull)(ZDKChatInfo * _Nullable, NSError * _Nullable))completion;
 - (void)setDepartment:(NSString * _Nullable)name completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
+- (void)setDepartment:(NSString * _Nonnull)id _:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendMessage:(NSString * _Nonnull)message completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
 - (void)sendOfflineForm:(ZDKOfflineForm * _Nonnull)offlineForm completion:(void (^ _Nullable)(ZDKOfflineForm * _Nullable, NSError * _Nullable))completion;
 - (void)resendFailedMessageWithId:(NSString * _Nonnull)id completion:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;

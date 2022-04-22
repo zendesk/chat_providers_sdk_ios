@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatProvidersSDK - ChatProvider</title>
+    <link rel="stylesheet" type="text/css" href="/chat_providers_sdk_ios/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/chat_providers_sdk_ios">
+            <strong>
+                ChatProvidersSDK
+            </strong>
+            <span>Documentation</span>
+        </a>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#chatprovider.chatstate">chat​State</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#chatprovider.requestchat()">request​Chat()</a></li><li class="function"><a href="#chatprovider.getchatinfo(_:)">get​Chat​Info(_:​)</a></li><li class="function"><a href="#chatprovider.setdepartment(_:completion:)">set​Department(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.setdepartmentbyidentifier(_:completion:)">set​Department​ByIdentifier(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendtyping(istyping:)">send​Typing(is​Typing:​)</a></li><li class="function"><a href="#chatprovider.sendofflineform(_:completion:)">send​Offline​Form(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendmessage(_:completion:)">send​Message(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.resendfailedmessage(withid:completion:)">resend​Failed​Message(with​Id:​completion:​)</a></li><li class="function"><a href="#chatprovider.deletefailedmessage(withid:completion:)">delete​Failed​Message(with​Id:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendfile(url:onprogress:completion:)">send​File(url:​on​Progress:​completion:​)</a></li><li class="function"><a href="#chatprovider.resendfailedfile(withid:onprogress:completion:)">resend​Failed​File(with​Id:​on​Progress:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendchatrating(_:completion:)">send​Chat​Rating(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendchatcomment(_:completion:)">send​Chat​Comment(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendemailtranscript(_:completion:)">send​Email​Transcript(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.endchat(_:)">end​Chat(_:​)</a></li><li class="function"><a href="#chatprovider.observechatstate(identifier:_:)">observe​Chat​State(identifier:​_:​)</a></li><li class="function"><a href="#chatprovider.getchatinfo(_:)">get​Chat​Info(_:​)</a></li><li class="function"><a href="#chatprovider.setdepartment(_:completion:)">set​Department(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendmessage(_:completion:)">send​Message(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendofflineform(_:completion:)">send​Offline​Form(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.resendfailedmessage(withid:completion:)">resend​Failed​Message(with​Id:​completion:​)</a></li><li class="function"><a href="#chatprovider.deletefailedmessage(withid:completion:)">delete​Failed​Message(with​Id:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendfile(url:onprogress:completion:)">send​File(url:​on​Progress:​completion:​)</a></li><li class="function"><a href="#chatprovider.resendfailedfile(withid:onprogress:completion:)">resend​Failed​File(with​Id:​on​Progress:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendchatrating(_:completion:)">send​Chat​Rating(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendchatcomment(_:completion:)">send​Chat​Comment(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.sendemailtranscript(_:completion:)">send​Email​Transcript(_:​completion:​)</a></li><li class="function"><a href="#chatprovider.endchat(_:)">end​Chat(_:​)</a></li><li class="function"><a href="#chatprovider.observechatstate(identifier:_:)">observe​Chat​State(identifier:​_:​)</a></li><li class="function"><a href="#chatprovider.observechatstate(_:)">observe​Chat​State(_:​)</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Class</small>
+    <code class="name">Chat​Provider</code>
+</h1>
+
+<div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">objc</span>(<span class="variable">ZDKChatProvider</span>)
+<span class="keyword">public</span> <span class="attribute">final</span> <span class="keyword">class</span> <span class="type">ChatProvider</span>: <span class="type">NSObject</span>, <a href="/chat_providers_sdk_ios/Loggable"><span class="type">Loggable</span></a>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The <code>ZDKChatProvider</code> provides APIs to interact and observe the current Chat session.</p>
+
+</div>
+<div class="discussion">
+    <p>It provides APIs to:</p>
+
+<ul>
+<li>
+<p>proactively request a chat</p>
+</li>
+<li>
+<p>send messages</p>
+</li>
+<li>
+<p>handle failed messages (retry/delete)</p>
+</li>
+<li>
+<p>set the visitors' typing indicator</p>
+</li>
+<li>
+<p>end the chat</p>
+</li>
+</ul>
+
+</div>
+<section id="relationships">
+    <h2 hidden>Relationships</h2>
+        <figure>
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 3.0.0 (20220226.1711)
+ -->
+<!-- Pages: 1 -->
+<svg width="872pt" height="116pt"
+ viewBox="0.00 0.00 872.00 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-112 868,-112 868,4 -4,4"/>
+<!-- ChatProvider -->
+<g id="node1" class="node class current">
+<title>ChatProvider</title>
+<g id="a_node1"><a xlink:href="/chat_providers_sdk_ios/ChatProvider" xlink:title="ChatProvider">
+<path fill="none" stroke="black" stroke-width="3" d="M528,-108C528,-108 336,-108 336,-108 330,-108 324,-102 324,-96 324,-96 324,-84 324,-84 324,-78 330,-72 336,-72 336,-72 528,-72 528,-72 534,-72 540,-78 540,-84 540,-84 540,-96 540,-96 540,-102 534,-108 528,-108"/>
+<text text-anchor="middle" x="432" y="-86.3" font-family="Menlo" font-size="14.00">ChatProvider</text>
+</a>
+</g>
+</g>
+<!-- Loggable -->
+<g id="node2" class="node protocol">
+<title>Loggable</title>
+<g id="a_node2"><a xlink:href="/chat_providers_sdk_ios/Loggable" xlink:title="Loggable">
+<path fill="none" stroke="black" d="M303,-36C303,-36 111,-36 111,-36 105,-36 99,-30 99,-24 99,-24 99,-12 99,-12 99,-6 105,0 111,0 111,0 303,0 303,0 309,0 315,-6 315,-12 315,-12 315,-24 315,-24 315,-30 309,-36 303,-36"/>
+<text text-anchor="middle" x="207" y="-14.3" font-family="Menlo" font-size="14.00">Loggable</text>
+</a>
+</g>
+</g>
+<!-- ChatProvider&#45;&gt;Loggable -->
+<g id="edge1" class="edge conformsTo">
+<title>ChatProvider&#45;&gt;Loggable</title>
+<path fill="none" stroke="black" d="M377.25,-71.97C345.4,-62.06 305.08,-49.51 271.67,-39.12"/>
+<polygon fill="black" stroke="black" points="272.59,-35.74 262,-36.11 270.51,-42.42 272.59,-35.74"/>
+</g>
+<!-- NSObject -->
+<g id="node3" class="node unknown">
+<title>NSObject</title>
+<path fill="none" stroke="black" d="M753,-36C753,-36 561,-36 561,-36 555,-36 549,-30 549,-24 549,-24 549,-12 549,-12 549,-6 555,0 561,0 561,0 753,0 753,0 759,0 765,-6 765,-12 765,-12 765,-24 765,-24 765,-30 759,-36 753,-36"/>
+<text text-anchor="middle" x="657" y="-14.3" font-family="Menlo" font-size="14.00">NSObject</text>
+</g>
+<!-- ChatProvider&#45;&gt;NSObject -->
+<g id="edge2" class="edge conformsTo">
+<title>ChatProvider&#45;&gt;NSObject</title>
+<path fill="none" stroke="black" d="M486.75,-71.97C518.6,-62.06 558.92,-49.51 592.33,-39.12"/>
+<polygon fill="black" stroke="black" points="593.49,-42.42 602,-36.11 591.41,-35.74 593.49,-42.42"/>
+</g>
+</g>
+</svg>
+
+
+    <figcaption hidden>Inheritance graph for ChatProvider.</figcaption>
+</figure>
+        <h3>Conforms To</h3>
+<dl>
+    <dt class="protocol"><code><a href="/chat_providers_sdk_ios/Loggable">Loggable</a></code></dt>
+<dd><p>Protocol that conforms</p>
+</dd>
+<dt class="unknown"><code>NSObject</code></dt>
+</dl>
+</section>
+    <section id="properties">
+        <h2>Properties</h2>
+
+        <div role="article" class="variable" id="chatprovider.chatstate">
+    <h3>
+        <code><a href="#chatprovider.chatstate">chat​State</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">chatState</span>: <a href="/chat_providers_sdk_ios/ChatState"><span class="type">ChatState</span></a>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Current chat state. Defaults to <code>ChatState.initial</code>.</p>
+
+</div>
+<div class="discussion">
+    <p>In order to observe updates of <code>ChatState</code>, please use the <code>observeChatState</code> function.</p>
+
+</div>
+</div>
+    </section>
+    <section id="methods">
+        <h2>Methods</h2>
+
+        <div role="article" class="function" id="chatprovider.requestchat()">
+    <h3>
+        <code><a href="#chatprovider.requestchat()">request​Chat()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(*, <span class="variable">deprecated</span>, <span class="variable">message</span>: <span class="string literal">"This API is no longer supported"</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">requestChat</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Proactively lets an agent know that the user wants to chat.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.getchatinfo(_:)">
+    <h3>
+        <code><a href="#chatprovider.getchatinfo(_:)">get​Chat​Info(_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">getChatInfo</span>(<span class="keyword">_</span> <span class="variable">completion</span>: <span class="attribute">@</span><span class="attribute">escaping</span> (<span class="type">Result</span>&lt;<a href="/chat_providers_sdk_ios/ChatInfo"><span class="type">ChatInfo</span></a>, <span class="type">Error</span>&gt;) -&gt; <span class="type">Void</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Get information about the state of the current chat.</p>
+
+</div>
+<div class="discussion">
+    <p>The <code>Chat</code> is ongoing if the given <code>ChatInfo</code> model's <code>isChatting</code> flag, is set to <code>true</code>.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>completion</th>
+    <td><code class="type">@escaping (Result&lt;Chat​Info, Error&gt;) -&gt; Void</code></td>
+    <td><p>block that is invoked once the <code>getChatInfo</code> request finishes.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.setdepartment(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.setdepartment(_:completion:)">set​Department(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">setDepartment</span>(<span class="keyword">_</span> <span class="variable">name</span>: <span class="type">String</span>?,
+                              <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">String</span>?, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Set the department by name for the next chat session.</p>
+
+</div>
+<div class="discussion">
+    <aside class="note" title="Note">
+    <p>The department can't be changed during a session. This method should be called before calling any other <code>ChatProvider</code> methods to ensure the department was set successfully.</p>
+
+</aside>
+<p>The <code>Chat</code> is ongoing if the given <code>ChatInfo</code> model's <code>isChatting</code> flag, is set to <code>true</code>.
+Retrieve the list of department names from via the <code>AccountProvider</code>.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>name</th>
+    <td><code class="type">String?</code></td>
+    <td><p>The name of the department to set.</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;String?, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p>block that is invoked once the <code>getChatInfo</code> request finishes.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.setdepartmentbyidentifier(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.setdepartmentbyidentifier(_:completion:)">set​Department​ByIdentifier(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">setDepartmentByIdentifier</span>(<span class="keyword">_</span> <span class="variable">id</span>: <span class="type">String</span>?,
+                                        <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">String</span>?, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Set the department by Id for the next chat session.</p>
+
+</div>
+<div class="discussion">
+    <aside class="note" title="Note">
+    <p>The department can't be changed during a session. This method should be called before calling any other <code>ChatProvider</code> methods to ensure the department was set successfully.</p>
+
+</aside>
+<p>The <code>Chat</code> is ongoing if the given <code>ChatInfo</code> model's <code>isChatting</code> flag, is set to <code>true</code>.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>id</th>
+    <td><code class="type">String?</code></td>
+    <td><p>The identifier of the department to set.</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;String?, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p>block that is invoked once the <code>getChatInfo</code> request finishes.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.sendtyping(istyping:)">
+    <h3>
+        <code><a href="#chatprovider.sendtyping(istyping:)">send​Typing(is​Typing:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendTyping</span>(<span class="variable">isTyping</span>: <span class="type">Bool</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Let's the agent know when the visitor is typing.</p>
+
+</div>
+<div class="discussion">
+    <p>If <code>true</code>, the visitor typing indicator will appear in agent dashboard, else it will be hidden.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>is​Typing</th>
+    <td><code class="type">Bool</code></td>
+    <td><p>isTyping</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.sendofflineform(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendofflineform(_:completion:)">send​Offline​Form(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendOfflineForm</span>(<span class="keyword">_</span> <span class="variable">offlineForm</span>: <a href="/chat_providers_sdk_ios/OfflineForm"><span class="type">OfflineForm</span></a>, <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<a href="/chat_providers_sdk_ios/OfflineForm"><span class="type">OfflineForm</span></a>, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Sends an offline form from the current visitor.</p>
+
+</div>
+<div class="discussion">
+    <aside class="warning" title="Warning">
+    <p>Make sure the email field is filled in the <code>VisitorInfo</code>, or the form will fail to send</p>
+
+</aside>
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>offline​Form</th>
+    <td><code class="type">Offline​Form</code></td>
+    <td><p><code>OfflineForm</code> model</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;Offline​Form, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p>block that executes everytime there is an update to the <code>ChatState</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.sendmessage(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendmessage(_:completion:)">send​Message(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendMessage</span>(<span class="keyword">_</span> <span class="variable">message</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">String</span>, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Send a chat message</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>message</th>
+    <td><code class="type">String</code></td>
+    <td><p>visitor message</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;String, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p><code>Result&lt;String, DeliveryStatusError&gt;</code> closure to handle delivery status of message. Default is <code>nil</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.resendfailedmessage(withid:completion:)">
+    <h3>
+        <code><a href="#chatprovider.resendfailedmessage(withid:completion:)">resend​Failed​Message(with​Id:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">resendFailedMessage</span>(<span class="variable">withId</span> <span class="variable">id</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">String</span>, <span class="type">Error</span>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Resend failed message identified by given message id</p>
+
+</div>
+<div class="discussion">
+    <aside class="note" title="Note">
+    <p>If the message id does not exist or the message associated with the id didn't fail, then <code>FailedMessageError</code> will be propagated through completion block.</p>
+
+</aside>
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>id</th>
+    <td><code class="type">String</code></td>
+    <td><p>id of the failed message.</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;String, Error&gt;) -&gt; Void)?</code></td>
+    <td><p><code>Result&lt;String, DeliveryStatusError&gt;</code> closure to handle resend status of message. Success is message id.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.deletefailedmessage(withid:completion:)">
+    <h3>
+        <code><a href="#chatprovider.deletefailedmessage(withid:completion:)">delete​Failed​Message(with​Id:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">deleteFailedMessage</span>(<span class="variable">withId</span> <span class="variable">id</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">String</span>, <span class="type">Error</span>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Delete failed message identified by given message id.</p>
+
+</div>
+<div class="discussion">
+    <aside class="note" title="Note">
+    <p>If the message id does not exist or the message associated with the id didn't fail, then <code>FailedMessageError</code> will be propagated through completion block. This can be used to delete failed file uploads.</p>
+
+</aside>
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>id</th>
+    <td><code class="type">String</code></td>
+    <td><p>id of the failed message.</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;String, Error&gt;) -&gt; Void)?</code></td>
+    <td><p><code>Result&lt;String, Error&gt;</code> closure to handle deletion status of message. Default is <code>nil</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.sendfile(url:onprogress:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendfile(url:onprogress:completion:)">send​File(url:​on​Progress:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendFile</span>(<span class="variable">url</span>: <span class="type">URL</span>,
+                         <span class="variable">onProgress</span>: ((<span class="type">Double</span>) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>,
+                         <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<a href="/chat_providers_sdk_ios/ChatAttachmentMessage"><span class="type">ChatAttachmentMessage</span></a>, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Send an attachment message.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>url</th>
+    <td><code class="type">URL</code></td>
+    <td><p>The file <code>URL</code> of the attachment to send</p>
+</td>
+</tr>
+<tr>
+    <th>on​Progress</th>
+    <td><code class="type">((Double) -&gt; Void)?</code></td>
+    <td><p>Handle file upload progress</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;Chat​Attachment​Message, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p><code>Result&lt;ChatAttachment, DeliveryStatusError&gt;</code> closure to handle whether the file sent successfully,</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.resendfailedfile(withid:onprogress:completion:)">
+    <h3>
+        <code><a href="#chatprovider.resendfailedfile(withid:onprogress:completion:)">resend​Failed​File(with​Id:​on​Progress:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">resendFailedFile</span>(<span class="variable">withId</span> <span class="variable">id</span>: <span class="type">String</span>,
+                                 <span class="variable">onProgress</span>: ((<span class="type">Double</span>) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>,
+                                 <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">String</span>, <span class="type">Error</span>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Resend attachment identified by given message id</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>id</th>
+    <td><code class="type">String</code></td>
+    <td><p>id of the attachment message.</p>
+</td>
+</tr>
+<tr>
+    <th>on​Progress</th>
+    <td><code class="type">((Double) -&gt; Void)?</code></td>
+    <td><p>closure to handle upload progress</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;String, Error&gt;) -&gt; Void)?</code></td>
+    <td><p><code>Result&lt;ChatAttachmentMessage, Error&gt;</code> closure to handle resend status of message. Default is <code>nil</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.sendchatrating(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendchatrating(_:completion:)">send​Chat​Rating(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendChatRating</span>(<span class="keyword">_</span> <span class="variable">rating</span>: <a href="/chat_providers_sdk_ios/Rating"><span class="type">Rating</span></a>, <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<a href="/chat_providers_sdk_ios/Rating"><span class="type">Rating</span></a>, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Send a chat <code>Rating</code> for the active session</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>rating</th>
+    <td><code class="type">Rating</code></td>
+    <td><p>The rating of the session <code>.good</code>/<code>.bad</code></p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;Rating, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p><code>Result&lt;Rating, DeliveryStatusError&gt;</code> closure to handle delivery status of message. Default is <code>nil</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.sendchatcomment(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendchatcomment(_:completion:)">send​Chat​Comment(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendChatComment</span>(<span class="keyword">_</span> <span class="variable">comment</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">String</span>, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Send a comment about the current chat session</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>comment</th>
+    <td><code class="type">String</code></td>
+    <td><p>The comment about the chat</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;String, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p><code>Result&lt;String, DeliveryStatusError&gt;</code> closure to handle delivery status of message. Default is <code>nil</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.sendemailtranscript(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendemailtranscript(_:completion:)">send​Email​Transcript(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendEmailTranscript</span>(<span class="keyword">_</span> <span class="variable">email</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">String</span>, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Schedules an email containing the chat transcript to be sent to email when the chat has ended.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>email</th>
+    <td><code class="type">String</code></td>
+    <td><p>the email to send the transcript</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;String, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p><code>Result&lt;String, DeliveryStatusError&gt;</code> closure to handle delivery status of message. Default is <code>nil</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.endchat(_:)">
+    <h3>
+        <code><a href="#chatprovider.endchat(_:)">end​Chat(_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">endChat</span>(<span class="keyword">_</span> <span class="variable">completion</span>: ((<span class="type">Result</span>&lt;<span class="type">Bool</span>, <a href="/chat_providers_sdk_ios/DeliveryStatusError"><span class="type">DeliveryStatusError</span></a>&gt;) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Ends the chat and closes the socket connection</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>completion</th>
+    <td><code class="type">((Result&lt;Bool, Delivery​Status​Error&gt;) -&gt; Void)?</code></td>
+    <td><p>block to handle the status of the <code>endChat</code> request. <code>true</code> on success.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="chatprovider.observechatstate(identifier:_:)">
+    <h3>
+        <code><a href="#chatprovider.observechatstate(identifier:_:)">observe​Chat​State(identifier:​_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">observeChatState</span>(<span class="variable">identifier</span>: <span class="type">ObservableIdentifier</span> = .<span class="variable">uuid</span>(),
+                                 <span class="keyword">_</span> <span class="variable">completion</span>: <span class="attribute">@</span><span class="attribute">escaping</span> (<a href="/chat_providers_sdk_ios/ChatState"><span class="type">ChatState</span></a>) -&gt; <span class="type">Void</span>) -&gt; <span class="type">ObservationToken</span>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Observe changes of the current chat's state</p>
+
+</div>
+<div class="discussion">
+    <p>The conversation thread can be accessed through the <code>logs</code></p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>identifier</th>
+    <td><code class="type">Observable​Identifier</code></td>
+    <td><p>ObservableIdentifier to be exclusive, or unique</p>
+</td>
+</tr>
+<tr>
+    <th>completion</th>
+    <td><code class="type">@escaping (Chat​State) -&gt; Void</code></td>
+    <td><p>block that executes everytime there is an update to the <code>ChatState</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+  <h4>Returns</h4>
+  <p>An <code>ObservationToken</code> that can cancel the subscription  to the <code>ChatState</code>.</p>
+
+</div>
+<div role="article" class="function" id="chatprovider.getchatinfo(_:)">
+    <h3>
+        <code><a href="#chatprovider.getchatinfo(_:)">get​Chat​Info(_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">getChatInfo</span>(<span class="keyword">_</span> <span class="variable">completion</span>: <span class="attribute">@</span><span class="attribute">escaping</span> ((<a href="/chat_providers_sdk_ios/ChatInfo"><span class="type">ChatInfo</span></a>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>))  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.setdepartment(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.setdepartment(_:completion:)">set​Department(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">setDepartment</span>(<span class="keyword">_</span> <span class="variable">name</span>: <span class="type">String</span>?, <span class="variable">completion</span>: ((<span class="type">String</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)?)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.sendmessage(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendmessage(_:completion:)">send​Message(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendMessage</span>(<span class="keyword">_</span> <span class="variable">message</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">String</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)?)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.sendofflineform(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendofflineform(_:completion:)">send​Offline​Form(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendOfflineForm</span>(<span class="keyword">_</span> <span class="variable">offlineForm</span>: <a href="/chat_providers_sdk_ios/OfflineForm"><span class="type">OfflineForm</span></a>,
+                                      <span class="variable">completion</span>: ((<a href="/chat_providers_sdk_ios/OfflineForm"><span class="type">OfflineForm</span></a>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)?)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.resendfailedmessage(withid:completion:)">
+    <h3>
+        <code><a href="#chatprovider.resendfailedmessage(withid:completion:)">resend​Failed​Message(with​Id:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">resendFailedMessage</span>(<span class="variable">withId</span> <span class="variable">id</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">String</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)?)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.deletefailedmessage(withid:completion:)">
+    <h3>
+        <code><a href="#chatprovider.deletefailedmessage(withid:completion:)">delete​Failed​Message(with​Id:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">deleteFailedMessage</span>(<span class="variable">withId</span> <span class="variable">id</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">String</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)?)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.sendfile(url:onprogress:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendfile(url:onprogress:completion:)">send​File(url:​on​Progress:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendFile</span>(<span class="variable">url</span>: <span class="type">URL</span>,
+                               <span class="variable">onProgress</span>: ((<span class="type">Double</span>) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>,
+                               <span class="variable">completion</span>: ((<span class="type">String</span>?, <a href="/chat_providers_sdk_ios/ChatAttachmentMessage"><span class="type">ChatAttachmentMessage</span></a>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)?)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.resendfailedfile(withid:onprogress:completion:)">
+    <h3>
+        <code><a href="#chatprovider.resendfailedfile(withid:onprogress:completion:)">resend​Failed​File(with​Id:​on​Progress:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">resendFailedFile</span>(<span class="variable">withId</span> <span class="variable">id</span>: <span class="type">String</span>,
+                                       <span class="variable">onProgress</span>: ((<span class="type">Double</span>) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>,
+                                       <span class="variable">completion</span>: ((<span class="type">String</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.sendchatrating(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendchatrating(_:completion:)">send​Chat​Rating(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendChatRating</span>(<span class="keyword">_</span> <span class="variable">rating</span>: <a href="/chat_providers_sdk_ios/ZDKRating"><span class="type">ZDKRating</span></a>, <span class="variable">completion</span>: ((<a href="/chat_providers_sdk_ios/ZDKRating"><span class="type">ZDKRating</span></a>, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.sendchatcomment(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendchatcomment(_:completion:)">send​Chat​Comment(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendChatComment</span>(<span class="keyword">_</span> <span class="variable">comment</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">String</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.sendemailtranscript(_:completion:)">
+    <h3>
+        <code><a href="#chatprovider.sendemailtranscript(_:completion:)">send​Email​Transcript(_:​completion:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">sendEmailTranscript</span>(<span class="keyword">_</span> <span class="variable">email</span>: <span class="type">String</span>, <span class="variable">completion</span>: ((<span class="type">String</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.endchat(_:)">
+    <h3>
+        <code><a href="#chatprovider.endchat(_:)">end​Chat(_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">endChat</span>(<span class="keyword">_</span> <span class="variable">completion</span>: ((<span class="type">Bool</span>, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>)?)  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.observechatstate(identifier:_:)">
+    <h3>
+        <code><a href="#chatprovider.observechatstate(identifier:_:)">observe​Chat​State(identifier:​_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">observeChatState</span>(<span class="variable">identifier</span>: <span class="type">String</span>,
+                                       <span class="keyword">_</span> <span class="variable">completion</span>: <span class="attribute">@</span><span class="attribute">escaping</span> (<a href="/chat_providers_sdk_ios/ChatState"><span class="type">ChatState</span></a>) -&gt; <span class="type">Void</span>) -&gt; <span class="type">ObservationToken</span>  </body></html></code></pre>
+</div>
+</div>
+<div role="article" class="function" id="chatprovider.observechatstate(_:)">
+    <h3>
+        <code><a href="#chatprovider.observechatstate(_:)">observe​Chat​State(_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="attribute">available</span>(<span class="variable">swift</span>, <span class="variable">obsoleted</span>: <span class="number literal">1.0</span>)
+    <span class="attribute">@</span><span class="attribute">objc</span> <span class="keyword">public</span> <span class="keyword">func</span> <span class="function">observeChatState</span>(<span class="keyword">_</span> <span class="variable">completion</span>: <span class="attribute">@</span><span class="attribute">escaping</span> (<a href="/chat_providers_sdk_ios/ChatState"><span class="type">ChatState</span></a>) -&gt; <span class="type">Void</span>) -&gt; <span class="type">ObservationToken</span>  </body></html></code></pre>
+</div>
+</div>
+    </section>
+
+
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2022-04-22T10:02:50+0000">April 22, 2022</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+</p>
+    </footer>
+</body>
+</html>
