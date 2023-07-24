@@ -14,7 +14,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		+Fd/TCgqpUL7s4dVKGL1S6SCUAE=
+		YkZg96vCb4DHYfne/vX+wsPtJ90=
 		</data>
 		<key>Modules/ChatProvidersSDK.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Modules/ChatProvidersSDK.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		xrTX0K+mtoYxlIlQKS/0929ymbk=
+		L635emGLQ5G2s+CCHBMITWk1SbQ=
 		</data>
 		<key>Modules/ChatProvidersSDK.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -38,7 +38,7 @@
 		</data>
 		<key>Modules/ChatProvidersSDK.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		ku4biL8EW7C1WC5edIKOuJF2WlQ=
+		cBWPoj4PmkzkZGpSb8uDfZyGYvY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -79,7 +79,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			9uHHvIyGsUhhr8UDwVjVdoVE2ENmgjPqTeqVpmi09C0=
+			c2B7UtoobTHwoAuURom6ukpathTxbh24kGDCL5LLfWw=
 			</data>
 		</dict>
 		<key>Modules/ChatProvidersSDK.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -100,7 +100,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			2ILWpYWAP6JiO6dPoTJqO6Jods1e9RhbQe4H25AmXPA=
+			ao5gGiB8ofaprQexVCZSjESlsX6nMUUxBwFX3CBkPTI=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
