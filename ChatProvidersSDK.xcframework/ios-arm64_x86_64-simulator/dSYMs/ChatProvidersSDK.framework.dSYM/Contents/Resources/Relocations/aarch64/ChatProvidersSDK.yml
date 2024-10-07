@@ -3192,8 +3192,8 @@ relocations:
   - { offsetInCU: 0xF3, offset: 0xBB8C2, size: 0x8, addend: 0x0, symName: '_$s16ChatProvidersSDK21DataNodeRatingRequestCfD', symObjAddr: 0x74, symBinAddr: 0x7CCC4, symSize: 0x3C }
   - { offsetInCU: 0x178, offset: 0xBB947, size: 0x8, addend: 0x0, symName: '_$s16ChatProvidersSDK21DataNodeRatingRequestCMa', symObjAddr: 0xB0, symBinAddr: 0x7CD00, symSize: 0x20 }
   - { offsetInCU: 0x27, offset: 0xBBA1A, size: 0x8, addend: 0x0, symName: '_$sSKsE4last7ElementQzSgvgSS_Tg5', symObjAddr: 0x0, symBinAddr: 0x7CD20, symSize: 0x78 }
-  - { offsetInCU: 0x4B, offset: 0xBBA3E, size: 0x8, addend: 0x0, symName: '_$s16ChatProvidersSDK6Base32O23crockfordsEncodingTableSays5UInt8VGvpZ', symObjAddr: 0x8AE0, symBinAddr: 0x1936B8, symSize: 0x0 }
-  - { offsetInCU: 0x65, offset: 0xBBA58, size: 0x8, addend: 0x0, symName: '_$s16ChatProvidersSDK6Base32O23crockfordsDecodingTableSays5UInt8VGvpZ', symObjAddr: 0x8AE8, symBinAddr: 0x1936C0, symSize: 0x0 }
+  - { offsetInCU: 0x4B, offset: 0xBBA3E, size: 0x8, addend: 0x0, symName: '_$s16ChatProvidersSDK6Base32O23crockfordsEncodingTableSays5UInt8VGvpZ', symObjAddr: 0x8AE8, symBinAddr: 0x1936B8, symSize: 0x0 }
+  - { offsetInCU: 0x65, offset: 0xBBA58, size: 0x8, addend: 0x0, symName: '_$s16ChatProvidersSDK6Base32O23crockfordsDecodingTableSays5UInt8VGvpZ', symObjAddr: 0x8AF0, symBinAddr: 0x1936C0, symSize: 0x0 }
   - { offsetInCU: 0xCB, offset: 0xBBABE, size: 0x8, addend: 0x0, symName: '_$s16ChatProvidersSDK6Base32O23crockfordsEncodingTable_WZ', symObjAddr: 0x78, symBinAddr: 0x7CD98, symSize: 0x34 }
   - { offsetInCU: 0x125, offset: 0xBBB18, size: 0x8, addend: 0x0, symName: '_$s16ChatProvidersSDK6Base32O23crockfordsDecodingTable_WZ', symObjAddr: 0xAC, symBinAddr: 0x7CDCC, symSize: 0x30 }
   - { offsetInCU: 0x24F, offset: 0xBBC42, size: 0x8, addend: 0x0, symName: '_$s10Foundation4DataV16ChatProvidersSDKE19base32EncodedString7padding5usingSSSb_Says5UInt8VGtF', symObjAddr: 0x13C, symBinAddr: 0x7CE5C, symSize: 0x1C4 }
